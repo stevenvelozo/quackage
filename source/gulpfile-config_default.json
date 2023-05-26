@@ -1,0 +1,11 @@
+{
+	"EntrypointInputSourceFile": "{~AppData:Package.InputSourceFile}",
+
+	"LibraryObjectName": "{~AppData:Package.Name}",
+
+	"LibraryOutputFolder": "{~AppData:Package.OutputFolder}",
+
+	"LibraryUniminifiedFileName": "fable.{~Data:Record.TargetName~}js",
+
+	"LibraryMinifiedFileName": "fable.{~Data:Record.TargetName~}min.js"
+}

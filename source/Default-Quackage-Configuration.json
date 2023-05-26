@@ -1,0 +1,30 @@
+{
+	"QuackageBaseGulpfile": "require('./node_modules/quackage/Quackage-Gulpfile.js');",
+	"GulpfileConfiguration": 
+	{
+		"EntrypointInputSourceFile": "{~AppData:Package.InputSourceFile}",
+		"LibraryObjectName": "{~AppData:Package.Name}",
+		"LibraryOutputFolder": "{~AppData:Package.OutputFolder}",
+		"LibraryUniminifiedFileName": "fable.{~Data:Record.TargetName~}js",
+		"LibraryMinifiedFileName": "fable.{~Data:Record.TargetName~}min.js"
+	},
+	"DefaultBabelRC":
+	{
+		"presets": ["@babel/preset-env"]
+	},
+	"GulpExecutions":
+	[
+		{
+			"Hash": "Default",
+			"Name": "Default standard build.",
+			"BuildFileLabel": "",
+			"BrowsersListRC": "> 0.01%"
+		},
+		{
+			"Hash": "Default",
+			"Name": "Default standard build.",
+			"BuildFileLabel": "",
+			"BrowsersListRC": "> 0.01%"
+		}
+	]
+}

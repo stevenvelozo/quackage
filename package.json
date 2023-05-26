@@ -1,0 +1,65 @@
+{
+  "name": "quackage",
+  "version": "1.0.0",
+  "description": "Building.  Testing.  Quacking.",
+  "main": "source/Quackage.js",
+  "scripts": {
+    "start": "node source/Quackage.js",
+    "coverage": "./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov ./node_modules/mocha/bin/_mocha -- -u tdd -R spec",
+    "test": "./node_modules/.bin/mocha -u tdd -R spec",
+    "build": "./node_modules/.bin/gulp build",
+    "build-compatible": "GULP_CUSTOM_BUILD_TARGET=compatible ./node_modules/.bin/gulp build"
+  },
+  "mocha": {
+    "diff": true,
+    "extension": [
+      "js"
+    ],
+    "package": "./package.json",
+    "reporter": "spec",
+    "slow": "75",
+    "timeout": "5000",
+    "ui": "tdd",
+    "watch-files": [
+      "source/**/*.js",
+      "test/**/*.js"
+    ],
+    "watch-ignore": [
+      "lib/vendor"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stevenvelozo/quackage.git"
+  },
+  "keywords": [
+    "entity",
+    "behavior"
+  ],
+  "author": "Steven Velozo <steven@velozo.com> (http://velozo.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stevenvelozo/quackage/issues"
+  },
+  "homepage": "https://github.com/stevenvelozo/quackage",
+  "dependencies": {
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.1",
+    "browserify": "^17.0.0",
+    "chai": "4.3.7",
+    "commander": "^10.0.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-env": "^0.4.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-terser": "^2.1.0",
+    "gulp-util": "^3.0.8",
+    "mocha": "10.2.0",
+    "npm-check-updates": "^16.10.12",
+    "nyc": "^15.1.0",
+    "pict": "^1.0.53",
+    "retold-data-service": "^1.0.3",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  }
+}
