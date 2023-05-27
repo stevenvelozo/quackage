@@ -19,12 +19,12 @@ class QuackageCommandBuild extends libCommandLineCommand
         this.addCommand();
     }
 
-    run(pArgumentString, pCommand, fCallback)
+    run(pArgumentString, pOptions, pCommand, fCallback)
     {
         let tmpActionsToExecute = pArgumentString.toUpperCase();
         let tmpActionSet = [];
 
-        let tmpOptions = pCommand.opts();
+        let tmpOptions = pOptions;
 
         this.log.info(`Building browserified module ${tmpActionsToExecute} from the command...`,tmpOptions);
 

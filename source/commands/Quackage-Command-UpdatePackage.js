@@ -19,12 +19,12 @@ class QuackageCommandLint extends libCommandLineCommand
         this.addCommand();
     }
 
-    run(pArgumentString, pCommand, fCallback)
+    run(pOptions, pCommand, fCallback)
     {
         // Execute the command
         this.log.info(`Updating package.json...`);
 
-        let tmpOptions = pCommand.opts();
+        let tmpOptions = pOptions;
 
         // The package.json from the project we are quackin at
         let tmpProjectPackage = JSON.parse(JSON.stringify(this.fable.AppData.Package));

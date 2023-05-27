@@ -15,7 +15,7 @@ class QuackageCommandLint extends libCommandLineCommand
         this.addCommand();
     }
 
-    run(pArgumentString, pCommand, fCallback)
+    run(pOptions, pCommand, fCallback)
     {
         // Execute the command
         this.log.info(`Linting package.json...`);
