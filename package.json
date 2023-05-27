@@ -1,6 +1,6 @@
 {
   "name": "quackage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Building.  Testing.  Quacking.",
   "main": "source/Quackage.js",
   "scripts": {
@@ -9,6 +9,10 @@
     "test": "./node_modules/.bin/mocha -u tdd -R spec",
     "build": "./node_modules/.bin/gulp build",
     "build-compatible": "GULP_CUSTOM_BUILD_TARGET=compatible ./node_modules/.bin/gulp build"
+  },
+  "bin": {
+    "quack": "./source/Quackage.js",
+    "qua": "./source/Quackage.js"
   },
   "mocha": {
     "diff": true,
