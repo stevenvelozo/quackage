@@ -1,5 +1,6 @@
 const libQuackageExecuteProcessBase = require(`./Quackage-Execute-Process-Base.js`);
 const libChildProcess = require('child_process');
+const libPath = require('path');
 
 class BaseQuackageProcessExecutionService extends libQuackageExecuteProcessBase
 {
@@ -17,7 +18,12 @@ class BaseQuackageProcessExecutionService extends libQuackageExecuteProcessBase
 
     quackageFolder()
     {
-        return `${__dirname}/../..`;
+        return libPath.resolve(`${__dirname}/../..`);
+    }
+
+    node_modules_folder()
+    {
+        return libPath.resolve(`${this.quackagefolder}/..`);
     }
 
     exitParentProcess(pCode)

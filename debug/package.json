@@ -4,34 +4,9 @@
     "description": "",
     "main": "Harness.js",
     "scripts": {
-        "test": "./node_modules/.bin/mocha -u tdd -R spec",
-        "start": "node Harness.js",
-        "coverage": "./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov ./node_modules/mocha/bin/_mocha -- -u tdd -R spec",
-        "build": "./node_modules/.bin/gulp build",
-        "build-compatible": "GULP_CUSTOM_BUILD_TARGET=compatible ./node_modules/.bin/gulp build",
-        "docker-dev-build": "docker build ./ -f Dockerfile_LUXURYCode -t quackage-debug-image:local",
-        "docker-dev-run": "docker run -it -d --name quackage-debug-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/quackage-debug\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" quackage-debug-image:local",
-        "docker-dev-shell": "docker exec -it quackage-debug-dev /bin/bash"
+        "test": "./node_modules/.bin/mocha -u tdd -R spec"
     },
     "keywords": [],
     "author": "steven velozo",
-    "license": "MIT",
-    "mocha": {
-        "diff": true,
-        "extension": [
-            "js"
-        ],
-        "package": "./package.json",
-        "reporter": "spec",
-        "slow": "75",
-        "timeout": "5000",
-        "ui": "tdd",
-        "watch-files": [
-            "source/**/*.js",
-            "test/**/*.js"
-        ],
-        "watch-ignore": [
-            "lib/vendor"
-        ]
-    }
+    "license": "MIT"
 }
