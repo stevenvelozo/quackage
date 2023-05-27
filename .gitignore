@@ -1,6 +1,7 @@
 # Quackage takes care of these for me!
 .babelrc
 .browserslistrc
+.browserslistrc-BACKUP
 .gulpfile-quackage.js
 .gulpfile-quackage-config.json
 
