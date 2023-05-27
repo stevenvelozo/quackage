@@ -24,7 +24,9 @@ class QuackageCommandBuild extends libCommandLineCommand
         let tmpActionsToExecute = pArgumentString.toUpperCase();
         let tmpActionSet = [];
 
-        this.log.info(`Building browserified module ${tmpActionsToExecute} from the command...`,pOptions);
+        let tmpOptions = pCommand.opts();
+
+        this.log.info(`Building browserified module ${tmpActionsToExecute} from the command...`,tmpOptions);
 
         // ##. Figure out which actions to execute
         for (let i = 0; i < this.fable.AppData.QuackagePackage.GulpExecutions.length; i++)

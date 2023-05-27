@@ -46,7 +46,7 @@ class QuackageCommandLint extends libCommandLineCommand
 
                 if (!tmpPackageSectionExists || tmpOptions.force)
                 {
-                    this.log.info(`  --> ${tmpProjectPackage.name}:${tmpProjectPackage.version}/package.json { ${tmpPackageSectionName}:... }: ${(tmpSectionsMatch && tmpPackageSectionExists) ? '[OK]' : '[NOT OK]'}`);
+                    this.log.info(`  --> ${tmpProjectPackage.name}:${tmpProjectPackage.version}/package.json SECTION { ${tmpPackageSectionName}:... }: ${(tmpSectionsMatch && tmpPackageSectionExists) ? '[OK]' : '[NOT OK]'}`);
                     tmpProjectPackage[tmpPackageSectionName] = tmpQuackageConfigSectionValue;
                 }
             }
