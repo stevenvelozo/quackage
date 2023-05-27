@@ -1,3 +1,12 @@
+# Quackage takes care of these for me!
+.babelrc
+.browserslistrc
+.gulpfile-quackage.js
+.gulpfile-quackage-config.json
+
+# I just dislike this one.
+.DS_Store
+
 # Logs
 logs
 *.log

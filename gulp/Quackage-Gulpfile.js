@@ -64,7 +64,7 @@
 // ---> Now load the config and get on with building <--- \\
 console.log(``);
 console.log(`---> Loading the gulp config...`);
-const _CONFIG = require('${process.cwd()}/.gulpfile-quackage-config.json');
+const _CONFIG = require(`${process.cwd()}/.gulpfile-quackage-config.json`);
 console.log(`   > Building to [${_CONFIG.LibraryUniminifiedFileName}] and [${_CONFIG.LibraryMinifiedFileName}]`)
 
 // --->  Boilerplate Browser Uglification and Packaging  <--- \\
@@ -130,5 +130,11 @@ libGulp.task('debug',
 libGulp.task
 (
 	'build',
+	libGulp.series('debug', 'minified')
+);
+
+libGulp.task
+(
+	'default',
 	libGulp.series('debug', 'minified')
 );

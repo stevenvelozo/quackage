@@ -1,0 +1,16 @@
+{
+  "name": "quackage-debug",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Harness.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Small",
+    "official",
+    "different."
+  ],
+  "author": "steven velozo",
+  "license": "MIT"
+}

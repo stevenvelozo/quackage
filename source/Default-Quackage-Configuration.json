@@ -1,12 +1,12 @@
 {
-	"QuackageBaseGulpfile": "require('./node_modules/quackage/Quackage-Gulpfile.js');",
+	"QuackageBaseGulpfile": "require('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');",
 	"GulpfileConfiguration": 
 	{
-		"EntrypointInputSourceFile": "{~AppData:Package.InputSourceFile}",
-		"LibraryObjectName": "{~AppData:Package.Name}",
-		"LibraryOutputFolder": "{~AppData:Package.OutputFolder}",
-		"LibraryUniminifiedFileName": "fable.{~Data:Record.TargetName~}js",
-		"LibraryMinifiedFileName": "fable.{~Data:Record.TargetName~}min.js"
+		"EntrypointInputSourceFile": "{~Data:AppData.CWD~}/{~Data:AppData.Package.main~}",
+		"LibraryObjectName": "{~Data:AppData.Package.name~}",
+		"LibraryOutputFolder": "{~Data:AppData.CWD~}/dist/",
+		"LibraryUniminifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}js",
+		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js"
 	},
 	"DefaultBabelRC":
 	{
@@ -15,15 +15,15 @@
 	"GulpExecutions":
 	[
 		{
-			"Hash": "Default",
+			"Hash": "default",
 			"Name": "Default standard build.",
 			"BuildFileLabel": "",
-			"BrowsersListRC": "> 0.01%"
+			"BrowsersListRC": "since 2018"
 		},
 		{
-			"Hash": "Default",
+			"Hash": "compatible",
 			"Name": "Default standard build.",
-			"BuildFileLabel": "",
+			"BuildFileLabel": "compatible.",
 			"BrowsersListRC": "> 0.01%"
 		}
 	]
