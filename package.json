@@ -39,7 +39,6 @@
   "browser": {
     "./source/utility/Quackage-Execute-Process.js": "./source/utility/Quackage-Execute-Process-Base.js"
   },
-
   "keywords": [
     "entity",
     "behavior"
@@ -65,7 +64,7 @@
     "mocha": "10.2.0",
     "npm-check-updates": "^16.10.12",
     "nyc": "^15.1.0",
-    "pict": "^1.0.55",
+    "pict": "^1.0.56",
     "retold-data-service": "^1.0.3",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"

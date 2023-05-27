@@ -1,19 +1,18 @@
 {
 	"QuackageBaseGulpfile": "require('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');",
-	"GulpfileConfiguration": 
-	{
+	"GulpfileConfiguration": {
 		"EntrypointInputSourceFile": "{~Data:AppData.CWD~}/{~Data:AppData.Package.main~}",
-		"LibraryObjectName": "{~Data:AppData.Package.name~}",
+		"LibraryObjectName": "{~Data:AppData.PackageNameCapitalizede~}",
 		"LibraryOutputFolder": "{~Data:AppData.CWD~}/dist/",
 		"LibraryUniminifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}js",
 		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js"
 	},
-	"DefaultBabelRC":
-	{
-		"presets": ["@babel/preset-env"]
+	"DefaultBabelRC": {
+		"presets": [
+			"@babel/preset-env"
+		]
 	},
-	"GulpExecutions":
-	[
+	"GulpExecutions": [
 		{
 			"Hash": "default",
 			"Name": "Default standard build.",
@@ -26,5 +25,40 @@
 			"BuildFileLabel": "compatible.",
 			"BrowsersListRC": "> 0.01%"
 		}
-	]
+	],
+	"PackageSection-mocha": {
+		"diff": true,
+		"extension": [
+			"js"
+		],
+		"package": "./package.json",
+		"reporter": "spec",
+		"slow": "75",
+		"timeout": "5000",
+		"ui": "tdd",
+		"watch-files": [
+			"source/**/*.js",
+			"test/**/*.js"
+		],
+		"watch-ignore": [
+			"lib/vendor"
+		]
+	},
+	"PackageScripts":
+	{
+		"start": "node {~Data:AppData.Package.main~}",
+
+		"test": "./node_modules/.bin/mocha -u tdd -R spec",
+		"coverage": "./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov ./node_modules/mocha/bin/_mocha -- -u tdd -R spec",
+
+		"build": "./node_modules/.bin/gulp build",
+		"build-compatible": "GULP_CUSTOM_BUILD_TARGET=compatible ./node_modules/.bin/gulp build",
+
+		"docker-dev-build": "docker build ./ -f Dockerfile_LUXURYCode -t {~Data:AppData.Package.name~}-image:local",
+		"docker-dev-run": "docker run -it -d --name {~Data:AppData.Package.name~}-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/{~Data:AppData.Package.name~}\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" {~Data:AppData.Package.name~}-image:local",
+		"docker-dev-shell": "docker exec -it {~Data:AppData.Package.name~}-dev /bin/bash"
+	},
+	"LuxuryIDEPort": 0,
+	"LuxuryWebPort": -1,
+	"LuxuryMySQLPort": -1
 }

@@ -14,7 +14,6 @@ class BaseQuackageProcessExecutionService extends libPict.ServiceProviderBase
         return `ABSTRACT_CWD`;
     }
 
-
     quackageFolder()
     {
         return `ABSTRACT_QUACKAGE_FOLDER`;
