@@ -1,8 +1,6 @@
 /**
 * Unit tests for Quackage
 *
-* @license     MIT
-*
 * @author      Steven Velozo <steven@velozo.com>
 */
 

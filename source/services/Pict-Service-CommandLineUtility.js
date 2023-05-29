@@ -2,11 +2,11 @@ const libCommander = require('commander').Command;
 const libPict = require('pict');
 
 const defaultCommandLineUtilityOptions = (
-    {
-        "Command": "default",
-        "Description": "Default command",
-        "Version": "0.0.0"
-    });
+	{
+		"Command": "default",
+		"Description": "Default command",
+		"Version": "0.0.0"
+	});
 
 class CommandLineUtility extends libPict.ServiceProviderBase
 {
@@ -14,24 +14,24 @@ class CommandLineUtility extends libPict.ServiceProviderBase
 	{
 		super(pFable, pManifest, pServiceHash);
 
-        this.serviceType = 'CommandLineUtility';
+		this.serviceType = 'CommandLineUtility';
 
-        // Add the CommandLineCommand service
-        this.fable.serviceManager.addServiceType('CommandLineCommand', require('./Pict-Service-CommandLineCommand.js'));
+		// Add the CommandLineCommand service
+		this.fable.serviceManager.addServiceType('CommandLineCommand', require('./Pict-Service-CommandLineCommand.js'));
 
-        this.options = this.defaultServices.Utility.extend(defaultCommandLineUtilityOptions, this.options);
+		this.options = this.defaultServices.Utility.extend(defaultCommandLineUtilityOptions, this.options);
 
-        this._Command = new libCommander();
+		this._Command = new libCommander();
 
-        this._Command.name(this.options.Command)
-            .description(this.options.Description)
-            .version(this.options.Version);
-    }
+		this._Command.name(this.options.Command)
+			.description(this.options.Description)
+			.version(this.options.Version);
+	}
 
-    createCommand(pCommandName, pCommandDescription)
-    {
-        return this._Command.command(pCommandName).description(pCommandDescription);
-    }
+	createCommand(pCommandName, pCommandDescription)
+	{
+		return this._Command.command(pCommandName).description(pCommandDescription);
+	}
 
 	// Just passing an options will construct one for us.
 	// Passing a hash will set the hash.
@@ -51,22 +51,22 @@ class CommandLineUtility extends libPict.ServiceProviderBase
 		}
 	}
 
-    // Take a prototype command and just add it as a service.
+	// Take a prototype command and just add it as a service.
 	addCommandFromClass(pPrototype, pHash)
 	{
 		let tmpHash = (typeof(pHash) == 'string') ? pHash : this.fable.getUUID();
-        return this.fable.serviceManager.instantiateServiceProviderFromPrototype('CommandLineCommand', {}, tmpHash, pPrototype);
+		return this.fable.serviceManager.instantiateServiceProviderFromPrototype('CommandLineCommand', {}, tmpHash, pPrototype);
 	}
 
-    run ()
-    {
-        return this._Command.parse();
-    }
+	run ()
+	{
+		return this._Command.parse();
+	}
 
-    get command()
-    {
-        return this._Command;
-    }
+	get command()
+	{
+		return this._Command;
+	}
 }
 
 module.exports = CommandLineUtility;

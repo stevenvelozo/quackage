@@ -6,32 +6,32 @@ class BaseQuackageProcessExecutionService extends libPict.ServiceProviderBase
 	{
 		super(pFable, pManifest, pServiceHash);
 
-        this.serviceType = 'QuackageProcess';
-    }
+		this.serviceType = 'QuackageProcess';
+	}
 
-    cwd()
-    {
-        return `ABSTRACT_CWD`;
-    }
+	cwd()
+	{
+		return `ABSTRACT_CWD`;
+	}
 
-    quackageFolder()
-    {
-        return `ABSTRACT_QUACKAGE_FOLDER`;
-    }
+	quackageFolder()
+	{
+		return `ABSTRACT_QUACKAGE_FOLDER`;
+	}
 
-    exitParentProcess(pCode)
-    {
-        return 'ABSTRACT_EXIT_PARENT_PROCESS';
-    }
+	exitParentProcess(pCode)
+	{
+		return 'ABSTRACT_EXIT_PARENT_PROCESS';
+	}
 
 	execute(pProcess, pArguments, pOptions, fCallback)
-    {
-        // Now log out what our execution would be!
-        this.log.info(`Executing process: ${pProcess}`);
-        this.log.trace(`Full command:  ${pProcess} ${pArguments.join(' ')}`, pOptions);
+	{
+		// Now log out what our execution would be!
+		this.log.info(`Executing process: ${pProcess}`);
+		this.log.trace(`Full command:  ${pProcess} ${pArguments.join(' ')}`, pOptions);
 
-        return fCallback();
-    }
+		return fCallback();
+	}
 }
 
 module.exports = BaseQuackageProcessExecutionService;

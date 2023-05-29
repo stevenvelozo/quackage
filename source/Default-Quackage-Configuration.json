@@ -2,7 +2,7 @@
 	"QuackageBaseGulpfile": "require('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');",
 	"GulpfileConfiguration": {
 		"EntrypointInputSourceFile": "{~Data:AppData.CWD~}/{~Data:AppData.Package.main~}",
-		"LibraryObjectName": "{~Data:AppData.PackageNameCapitalizede~}",
+		"LibraryObjectName": "{~PascalCaseIdentifier:AppData.Package.name~}",
 		"LibraryOutputFolder": "{~Data:AppData.CWD~}/dist/",
 		"LibraryUniminifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}js",
 		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js"

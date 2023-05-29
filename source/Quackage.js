@@ -5,11 +5,14 @@ const _QuackageDefaultConfiguration = require('./Default-Quackage-Configuration.
 
 
 let _Pict = new libPict(
-    {
-        Product: 'Quackage',
-        ProductVersion: '1.0.0'
-    }
+	{
+		Product: 'Quackage',
+		ProductVersion: '1.0.0'
+	}
 );
+// Instantiate the file persistence service
+_Pict.serviceManager.instantiateServiceProvider('FilePersistence');
+_Pict.serviceManager.instantiateServiceProvider('DataGeneration');
 // Add the Quackage Process Management service
 _Pict.serviceManager.addAndInstantiateServiceType('QuackageProcess', require('./services/Quackage-Execute-Process.js'));
 // Add the Command Line Utility service
@@ -22,45 +25,44 @@ _Pict.AppData.QuackageFolder = _Pict.QuackageProcess.quackageFolder();
 // Check that a package.json is in the folder we are quacking from
 try
 {
-    _Pict.AppData.Package = require(`${_Pict.AppData.CWD}/package.json`);
-    _Pict.AppData.PackageNameCapitalized = _Pict.DataFormat.cleanNonAlphaCharacters(_Pict.DataFormat.capitalizeEachWord(_Pict.AppData.Package.name));
-    _Pict.log.info(`Quacking from [${_Pict.AppData.CWD}] about node package ${_Pict.AppData.Package.name} [${_Pict.AppData.PackageNameCapitalized} - ${_Pict.AppData.Package.version}]`)
+	_Pict.AppData.Package = require(`${_Pict.AppData.CWD}/package.json`);
 }
 catch (pError)
 {
-    _Pict.log.error(`No package.json found in [${_Pict.AppData.CWD}].  Please run quackage from a folder with a package.json file.`);
-    _Pict.log.info(`Quack a nice day!`)
-    _Pict.QuackageProcess.exitParentProcess(1);
+	_Pict.log.error(`No package.json found in [${_Pict.AppData.CWD}].  Please run quackage from a folder with a package.json file.`);
+	_Pict.log.info(`Quack a nice day!`)
+	_Pict.QuackageProcess.exitParentProcess(1);
 }
 finally
 {
-    // Check for a quackage.json file
-    try
-    {
-        _Pict.AppData.QuackagePackage = require(`${_Pict.AppData.CWD}/.quackage.json`);
-        _Pict.AppData.QuackagePackage = _Pict.Utility.extend(_QuackageDefaultConfiguration, _Pict.AppData.QuackagePackage);
-    }
-    catch (pError)
-    {
-        _Pict.log.warn(`No ./.quackage.json found in [${_Pict.AppData.CWD}].  Using default configuration.`);
-        _Pict.AppData.QuackagePackage = _QuackageDefaultConfiguration;
-    }
+	// Check for a quackage.json file
+	try
+	{
+		_Pict.AppData.QuackagePackage = require(`${_Pict.AppData.CWD}/.quackage.json`);
+		_Pict.AppData.QuackagePackage = _Pict.Utility.extend(_QuackageDefaultConfiguration, _Pict.AppData.QuackagePackage);
+	}
+	catch (pError)
+	{
+		_Pict.log.warn(`No ./.quackage.json found in [${_Pict.AppData.CWD}].  Using default configuration.`);
+		_Pict.AppData.QuackagePackage = _QuackageDefaultConfiguration;
+	}
 
-    // Create our command line utility service
-    _Pict.serviceManager.instantiateServiceProvider('CommandLineUtility',
-        {
-            "Command": "quackage",
-            "Description": "CLI testing and building meant to be run from a folder with a package.json and customized with a quackage.json",
-            "Version": _QuackagePackage.version
-        });
+	// Create our command line utility service
+	_Pict.serviceManager.instantiateServiceProvider('CommandLineUtility',
+		{
+			"Command": "quackage",
+			"Description": "CLI testing and building meant to be run from a folder with a package.json and customized with a quackage.json",
+			"Version": _QuackagePackage.version
+		});
 
-    // Add our commands
-    _Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-UpdatePackage.js'));
-    _Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-Lint.js'));
-    _Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-Build.js'));
+	// Add our commands
+	_Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-UpdatePackage.js'));
+	_Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-Lint.js'));
+	_Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-Build.js'));
+	_Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-Boilerplate.js'));
 
-    console.log('')
-    _Pict.CommandLineUtility.run();
+	console.log('')
+	_Pict.CommandLineUtility.run();
 }
 
 module.exports = _Pict;
