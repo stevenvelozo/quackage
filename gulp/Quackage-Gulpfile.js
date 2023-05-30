@@ -62,13 +62,11 @@
  */
 
 // ---> Now load the config and get on with building <--- \\
-console.log(``);
-console.log(`---> Loading the gulp config...`);
+console.log(`[ Quackage-Gulpfile.js ] ---> Loading the gulp config...`);
 const _CONFIG = require(`${process.cwd()}/.gulpfile-quackage-config.json`);
 console.log(`   > Building to [${_CONFIG.LibraryUniminifiedFileName}] and [${_CONFIG.LibraryMinifiedFileName}]`)
 
 // --->  Boilerplate Browser Uglification and Packaging  <--- \\
-console.log(``);
 console.log(`--> Gulp is taking over!`);
 
 const libBrowserify = require('browserify');
@@ -78,7 +76,6 @@ const libVinylSourceStream = require('vinyl-source-stream');
 const libVinylBuffer = require('vinyl-buffer');
 
 const libSourcemaps = require('gulp-sourcemaps');
-const libGulpUtil = require('gulp-util');
 const libBabel = require('gulp-babel');
 const libTerser = require('gulp-terser');
 
@@ -101,7 +98,7 @@ libGulp.task('minified',
 				//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
 				.pipe(libBabel())
 				.pipe(libTerser())
-				.on('error', libGulpUtil.log)
+				.on('error', console.log)
 		.pipe(libSourcemaps.write('./'))
 		.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
 });
@@ -123,7 +120,7 @@ libGulp.task('debug',
 					// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
 					//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
 					.pipe(libBabel())
-					.on('error', libGulpUtil.log)
+					.on('error', console.log)
 			.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
 	});
 
