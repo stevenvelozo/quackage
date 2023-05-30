@@ -82,7 +82,7 @@ class QuackageCommandBuild extends libCommandLineCommand
 				// ## .gulpfile-quackage.js
 				libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
 				// ## gulpfile.js
-				libFS.writeFileSync(`${this.fable.AppData.CWD}/gulpfile.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
+				//libFS.writeFileSync(`${this.fable.AppData.CWD}/gulpfile.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
 
 				// Now execute the gulpfile using our custom service provider!
 				// We are forcing the gulp to run from the node_modules folder of the package -- this allows you to run quackage globally
