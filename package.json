@@ -1,6 +1,6 @@
 {
   "name": "quackage",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "Building.  Testing.  Quacking.",
   "main": "source/Quackage.js",
   "scripts": {
@@ -51,7 +51,7 @@
   "homepage": "https://github.com/stevenvelozo/quackage",
   "dependencies": {
     "@babel/core": "^7.22.1",
-    "@babel/preset-env": "^7.22.2",
+    "@babel/preset-env": "^7.22.4",
     "browserify": "^17.0.0",
     "chai": "4.3.7",
     "commander": "^10.0.1",
@@ -64,8 +64,7 @@
     "mocha": "10.2.0",
     "npm-check-updates": "^16.10.12",
     "nyc": "^15.1.0",
-    "pict": "^1.0.71",
-    "retold-data-service": "^1.0.3",
+    "pict": "^1.0.78",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   }
