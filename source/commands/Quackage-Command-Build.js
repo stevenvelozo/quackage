@@ -91,6 +91,16 @@ class QuackageCommandBuild extends libCommandLineCommand
 			},
 			(pError) =>
 			{
+				// Now process the CopyAfterBuild directives
+				if (this.fable.AppData.QuackagePackage.CopyAfterBuild.length > 0)
+				{
+					//this.log.info(`Copying the following files to :`, { Files: this.fable.AppData.QuackagePackage.CopyAfterBuild });
+					for (let i = 0; i < this.fable.AppData.QuackagePackage.CopyAfterBuild.length; i++)
+					{
+						// TODO: FilePersistence needs a copy recursive with globbing.
+						//libFS.copyFileSync(`${this.fable.AppData.CWD}/${this.fable.AppData.QuackagePackage.CopyAfterBuild[i]}`, `${this.fable.AppData.CWD}/dist/${this.fable.AppData.QuackagePackage.CopyAfterBuild[i]}`);
+					}
+				}
 				if (typeof (fCallback) == 'function')
 				{
 					return fCallback(pError);
