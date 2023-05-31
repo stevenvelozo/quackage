@@ -131,6 +131,8 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 
 			let tmpFileFolder = libPath.dirname(tmpFilePath);
 
+			tmpFilePath = tmpFilePath.replace('QUACKAGEPROJECTNAMECAP', this.defaultServices.DataFormat.capitalizeEachWord(this.fable.AppData.Package.name));
+
 			libFilePersistence.makeFolderRecursive(tmpFileFolder,
 				(pError)=>
 				{
