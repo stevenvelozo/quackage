@@ -2,7 +2,7 @@ const libCommandLineCommand = require('../services/Pict-Service-CommandLineComma
 const libOS = require('os');
 const libPath = require('path');
 
-class QuackageCommandLint extends libCommandLineCommand
+class QuackageCommandBoilerplate extends libCommandLineCommand
 {
 	constructor(pFable, pManifest, pServiceHash)
 	{
@@ -13,6 +13,7 @@ class QuackageCommandLint extends libCommandLineCommand
 
 		this.options.CommandArguments.push({ Name: '<fileset>', Description: 'The boilerplate fileset to generate.' });
 
+		this.options.CommandOptions.push({ Name: '-s, --scope', Description: 'A "scope" for the template.', Default: 'Scope' });
 		this.options.CommandOptions.push({ Name: '-f, --force', Description: 'Force overwrite anything in the package.json; use at your own quacking peril' });
 		this.options.CommandOptions.push({ Name: '-c, --content', Description: 'An extra content string.', Default: '' });
 
@@ -21,20 +22,21 @@ class QuackageCommandLint extends libCommandLineCommand
 
 		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.fable.AppData.QuackagePackage, null, 4));
 
-		this.fileSet = require('./Quackage-Command-Boilerplate-Content.json');
+		this.fileSet = require('../../.quackage-templates.json');
 
 		// Auto add the command on initialization
 		this.addCommand();
 	}
 
-	run(pFileset, pScope, pOptions, fCallback)
+	run(pFileset, pOptions, fCallback)
 	{
+		let tmpScope = pOptions.scope;
 		// Execute the command
-		this.log.info(`Creating boilerplate file(s) for [${pFileset}] Scoped as ${pScope}...`);
+		this.log.info(`Creating boilerplate file(s) for [${pFileset}] Scoped as ${tmpScope}...`);
 
 		// Check if there is a .quackage-boilerplate.json in either the current directory or the user's home directory.
-		let tmpCWDFilesetPath = `${this.fable.AppData.CWD}/.quackage-boilerplate.json`;
-		let tmpHomeFilesetPath = `${libOS.homedir()}/.quackage-boilerplate.json`;
+		let tmpCWDFilesetPath = `${this.fable.AppData.CWD}/.quackage-templates.json`;
+		let tmpHomeFilesetPath = `${libOS.homedir()}/.quackage-templates.json`;
 
 		let libFilePersistence = this.defaultServices.FilePersistence;
 
@@ -88,14 +90,18 @@ class QuackageCommandLint extends libCommandLineCommand
 		if (!this.fileSet[pFileset])
 		{
 			this.log.error(`The requested fileset [${pFileset}] does not exist!`);
-			return fCallback();
+			if (typeof (fCallback) == 'function')
+			{
+				return fCallback();
+			}
+			return false;
 		}
 
 		// Build the boilerplate state
 		let tmpBoilerPlateRecord = this.fileSet[pFileset];
 		tmpBoilerPlateRecord.FileSetName = pFileset;
 
-		tmpBoilerPlateRecord.Scope = pScope;
+		tmpBoilerPlateRecord.Scope = tmpScope;
 		tmpBoilerPlateRecord.Content = (typeof(pOptions.content) == 'string') ? pOptions.content : '';
 		tmpBoilerPlateRecord.CommandOptions = pOptions;
 
@@ -105,12 +111,15 @@ class QuackageCommandLint extends libCommandLineCommand
 			let tmpFile = tmpBoilerPlateRecord.Files[i];
 			this.fable.TemplateProvider.addTemplate(tmpFile.Hash, tmpFile.Content);
 		}
-		let tmpTemplateKeys = Object.keys(tmpBoilerPlateRecord.Templates);
-		for (let i = 0; i < tmpTemplateKeys.length; i++)
+		if (tmpBoilerPlateRecord.hasOwnProperty('Templates'))
 		{
-			let tmpTemplateKey = tmpTemplateKeys[i];
-			let tmpTemplate = tmpBoilerPlateRecord.Templates[tmpTemplateKey];
-			this.fable.TemplateProvider.addTemplate(tmpTemplateKey, tmpTemplate);
+			let tmpTemplateKeys = Object.keys(tmpBoilerPlateRecord.Templates);
+			for (let i = 0; i < tmpTemplateKeys.length; i++)
+			{
+				let tmpTemplateKey = tmpTemplateKeys[i];
+				let tmpTemplate = tmpBoilerPlateRecord.Templates[tmpTemplateKey];
+				this.fable.TemplateProvider.addTemplate(tmpTemplateKey, tmpTemplate);
+			}
 		}
 
 		for (let i = 0; i < tmpBoilerPlateRecord.Files.length; i++)
@@ -127,8 +136,13 @@ class QuackageCommandLint extends libCommandLineCommand
 				{
 					if (pError)
 					{
-						this.log.error(`Error creating folder [${tmpFileFolder}] for boilerplate scope [${pScope}]: ${pError.message}`);
+						this.log.error(`Error creating folder [${tmpFileFolder}] for boilerplate scope [${tmpScope}]: ${pError.message}`);
 						return fCallback(pError);
+					}
+
+					if (tmpBoilerPlateRecord.hasOwnProperty('options'))
+					{
+						tmpBoilerPlateRecord.options = pOptions;
 					}
 
 					// Write the file
@@ -159,4 +173,4 @@ class QuackageCommandLint extends libCommandLineCommand
 	};
 }
 
-module.exports = QuackageCommandLint;
+module.exports = QuackageCommandBoilerplate;

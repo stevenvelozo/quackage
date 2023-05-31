@@ -10,16 +10,16 @@ const defaultCommandLineUtilityOptions = (
 
 class CommandLineUtility extends libPict.ServiceProviderBase
 {
-	constructor(pFable, pManifest, pServiceHash)
+	constructor(pFable, pOptions, pServiceHash)
 	{
-		super(pFable, pManifest, pServiceHash);
+		let tmpOptions = Object.assign({}, defaultCommandLineUtilityOptions, pOptions);
+
+		super(pFable, tmpOptions, pServiceHash);
 
 		this.serviceType = 'CommandLineUtility';
 
 		// Add the CommandLineCommand service
 		this.fable.serviceManager.addServiceType('CommandLineCommand', require('./Pict-Service-CommandLineCommand.js'));
-
-		this.options = this.defaultServices.Utility.extend(defaultCommandLineUtilityOptions, this.options);
 
 		this._Command = new libCommander();
 

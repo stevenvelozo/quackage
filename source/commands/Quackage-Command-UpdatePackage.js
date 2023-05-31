@@ -1,7 +1,7 @@
 const libFS = require('fs');
 const libCommandLineCommand = require('../services/Pict-Service-CommandLineCommand.js');
 
-class QuackageCommandLint extends libCommandLineCommand
+class QuackageCommandUpdatePackage extends libCommandLineCommand
 {
 	constructor(pFable, pManifest, pServiceHash)
 	{
@@ -13,7 +13,6 @@ class QuackageCommandLint extends libCommandLineCommand
 		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.fable.AppData.QuackagePackage, null, 4));
 
 		this.options.CommandOptions.push({ Name: '-f, --force', Description: 'Force overwrite anything in the package.json; use at your own quacking peril' });
-
 
 		// Auto add the command on initialization
 		this.addCommand();
@@ -101,4 +100,4 @@ class QuackageCommandLint extends libCommandLineCommand
 	};
 }
 
-module.exports = QuackageCommandLint;
+module.exports = QuackageCommandUpdatePackage;

@@ -1,6 +1,5 @@
 /*
 	Unit tests for {~PascalCaseIdentifier:AppData.Package.name~} {~Data:Record.Scope~}
-	{~Data: Record.Description~}
 */
 
 const Chai = require('chai');
@@ -21,7 +20,7 @@ suite
 				() =>
 				{
 					test(
-							'Generated test {~RandomNumberString:1,9~}',
+							'Object Instantiation # {~RandomNumberString:1,9~}',
 							(fDone) =>
 							{
 								let _{~PascalCaseIdentifier:AppData.Package.name~} = new lib{~PascalCaseIdentifier:AppData.Package.name~}();

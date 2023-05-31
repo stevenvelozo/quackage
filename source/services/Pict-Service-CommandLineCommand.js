@@ -13,13 +13,13 @@ const defaultCommandOptions = (
 
 class CommandLineCommand extends libPict.ServiceProviderBase
 {
-	constructor(pFable, pManifest, pServiceHash)
+	constructor(pFable, pOptions, pServiceHash)
 	{
-		super(pFable, pManifest, pServiceHash);
+		// Object.assign is recursive and pollutes middle objects in some environments.  UGH
+		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(defaultCommandOptions)), pOptions);
+		super(pFable, tmpOptions, pServiceHash);
 
 		this.serviceType = 'CommandLineCommand';
-
-		this.options = this.defaultServices.Utility.extend(defaultCommandOptions, this.options);
 	}
 
 	addCommand()
