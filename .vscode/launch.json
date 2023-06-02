@@ -12,7 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/source/Quackage.js",
-            "args":["buildtemplates", "./templates"]
+            "args":["lint", "./templates"]
         }
     ]
 }

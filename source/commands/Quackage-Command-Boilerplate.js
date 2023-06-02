@@ -13,9 +13,9 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 
 		this.options.CommandArguments.push({ Name: '<fileset>', Description: 'The boilerplate fileset to generate.' });
 
-		this.options.CommandOptions.push({ Name: '-s, --scope', Description: 'A "scope" for the template.', Default: 'Scope' });
-		this.options.CommandOptions.push({ Name: '-f, --force', Description: 'Force overwrite anything in the package.json; use at your own quacking peril' });
-		this.options.CommandOptions.push({ Name: '-c, --content', Description: 'An extra content string.', Default: '' });
+		this.options.CommandOptions.push({ Name: '-s, --scope [scope]', Description: 'A "scope" for the template (used for things like unit tests)', Default: 'BoilerplateScope' });
+		this.options.CommandOptions.push({ Name: '-d, --description [description]', Description: 'An extra content string used as a description', Default: '' });
+		this.options.CommandOptions.push({ Name: '-o, --outputfolder [output_folder]', Description: 'Where to write the .quackage-templates.json file', Default: '' });
 
 		this.options.Aliases.push('boil');
 		this.options.Aliases.push('bp');
@@ -38,7 +38,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 		let tmpCWDFilesetPath = `${this.fable.AppData.CWD}/.quackage-templates.json`;
 		let tmpHomeFilesetPath = `${libOS.homedir()}/.quackage-templates.json`;
 
-		let libFilePersistence = this.defaultServices.FilePersistence;
+		let libFilePersistence = this.services.FilePersistence;
 
 		if (libFilePersistence.existsSync(tmpCWDFilesetPath))
 		{
@@ -58,7 +58,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 				{
 					this.log.info(`...Boilerplate fileset loaded from [${tmpCWDFilesetPath}]`);
 					this.log.info(`...Merging boilerplate fileset [${tmpCWDFilesetPath}] with [${pFileset}]`);
-					this.fileSet = this.defaultServices.Utility.extend(this.fileSet, tmpCWDFileset);
+					this.fileSet = this.services.Utility.extend(this.fileSet, tmpCWDFileset);
 				}
 			}
 		}
@@ -81,7 +81,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 				{
 					this.log.info(`...Boilerplate fileset loaded from [${tmpHomeFilesetPath}]`);
 					this.log.info(`...Merging boilerplate fileset [${tmpHomeFilesetPath}] with [${pFileset}]`);
-					this.fileSet = this.defaultServices.Utility.extend(this.fileSet, tmpHomeFileset);
+					this.fileSet = this.services.Utility.extend(this.fileSet, tmpHomeFileset);
 				}
 			}
 		}
@@ -131,7 +131,8 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 
 			let tmpFileFolder = libPath.dirname(tmpFilePath);
 
-			tmpFilePath = tmpFilePath.replace('QUACKAGEPROJECTNAMECAP', this.defaultServices.DataFormat.capitalizeEachWord(this.fable.AppData.Package.name));
+			tmpFilePath = tmpFilePath.replace('QUACKAGEPROJECTNAMECAP', this.services.DataFormat.capitalizeEachWord(this.fable.AppData.Package.name))
+								.replace('QUACKAGESCOPE', tmpScope);
 
 			libFilePersistence.makeFolderRecursive(tmpFileFolder,
 				(pError)=>
@@ -152,7 +153,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 					{
 						// It exists!  Show the user the command to back it up and/or delete it.  Don't generate it.
 						this.log.error(`The requested file [${tmpFilePath}] already exists!`);
-						this.log.info(`To back it up, run: [ mv "${tmpFilePath}" "${tmpFilePath}_QuackageBackup_${this.defaultServices.DataGeneration.randomNumericString(4, 9998)}.bak" ]`);
+						this.log.info(`To back it up, run: [ mv "${tmpFilePath}" "${tmpFilePath}_QuackageBackup_${this.services.DataGeneration.randomNumericString(4, 9998)}.bak" ]`);
 						this.log.info(`To delete it, run:  [ rm "${tmpFilePath}" ]`);
 					}
 					else

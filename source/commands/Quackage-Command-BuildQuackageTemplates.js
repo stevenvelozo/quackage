@@ -9,12 +9,13 @@ class QuackageCommandBuildTemplates extends libCommandLineCommand
 	{
 		super(pFable, pManifest, pServiceHash);
 
-		this.options.CommandKeyword = 'buildtemplates';
+		this.options.CommandKeyword = 'buildquackagetemplates';
 		this.options.Description = 'Generate boilerplate file set templates for each folder in the passed in path';
 
 		this.options.CommandArguments.push({ Name: '<folder>', Description: 'The folder path to build templates for.' });
+		this.options.Comma
 
-		this.options.Aliases.push('bt');
+		this.options.Aliases.push('bqt');
 
 		this.templateSets = {};
 

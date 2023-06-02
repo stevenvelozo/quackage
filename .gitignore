@@ -1,3 +1,6 @@
+# Test Environment
+debug/testenv
+
 # Quackage takes care of these for me!
 .babelrc
 .browserslistrc

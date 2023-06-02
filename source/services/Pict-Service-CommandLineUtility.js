@@ -12,7 +12,7 @@ class CommandLineUtility extends libPict.ServiceProviderBase
 {
 	constructor(pFable, pOptions, pServiceHash)
 	{
-		let tmpOptions = Object.assign({}, defaultCommandLineUtilityOptions, pOptions);
+		let tmpOptions = Object.assign({}, JSON.parse(JSON.stringify(defaultCommandLineUtilityOptions)), pOptions);
 
 		super(pFable, tmpOptions, pServiceHash);
 

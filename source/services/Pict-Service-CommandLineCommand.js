@@ -27,10 +27,10 @@ class CommandLineCommand extends libPict.ServiceProviderBase
 		if (!this.options.CommandAdded)
 		{
 			// Find the default CommandLineUtility service, or make one if it isn't there yet
-			let tmpCommandLineUtility = this.defaultServices.CommandLineUtility
+			let tmpCommandLineUtility = this.services.CommandLineUtility
 			if (typeof (tmpCommandLineUtility) === 'undefined')
 			{
-				tmpCommandLineUtility = this.defaultServices.ServiceManager.instantiateService('CommandLineUtility');
+				tmpCommandLineUtility = this.fable.ServiceManager.instantiateService('CommandLineUtility');
 			}
 
 			//_Command.command('command_keyword')
