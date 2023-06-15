@@ -61,6 +61,7 @@ finally
 	_Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-Build.js'));
 	_Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-Boilerplate.js'));
 	_Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-BuildTemplates.js'));
+	_Pict.CommandLineUtility.addCommandFromClass(require('./commands/Quackage-Command-ListTemplates.js'));
 
 	console.log('')
 	_Pict.CommandLineUtility.run();

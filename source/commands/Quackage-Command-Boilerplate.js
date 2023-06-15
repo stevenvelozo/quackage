@@ -22,7 +22,15 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 
 		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.fable.AppData.QuackagePackage, null, 4));
 
-		this.fileSet = require('../../.quackage-templates.json');
+		try
+		{
+			this.fileSet = require('../../.quackage-templates.json');
+		}
+		catch(pError)
+		{
+			this.fileSet = {};
+			this.fable.log.error(`Error loading .quackage-templates.json: ${pError.message}`);
+		}
 
 		// Auto add the command on initialization
 		this.addCommand();
@@ -132,7 +140,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 			let tmpFileFolder = libPath.dirname(tmpFilePath);
 
 			tmpFilePath = tmpFilePath.replace('QUACKAGEPROJECTNAMECAP', this.services.DataFormat.capitalizeEachWord(this.fable.AppData.Package.name))
-								.replace('QUACKAGESCOPE', tmpScope);
+										.replace('QUACKAGESCOPE', tmpScope);
 
 			libFilePersistence.makeFolderRecursive(tmpFileFolder,
 				(pError)=>
@@ -140,7 +148,6 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 					if (pError)
 					{
 						this.log.error(`Error creating folder [${tmpFileFolder}] for boilerplate scope [${tmpScope}]: ${pError.message}`);
-						return fCallback(pError);
 					}
 
 					if (tmpBoilerPlateRecord.hasOwnProperty('options'))
@@ -168,8 +175,6 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 					{
 						return fCallback();
 					}
-
-					this.log.info(`Have a nice day!`);
 				});
 
 		}

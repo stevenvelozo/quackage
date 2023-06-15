@@ -1,6 +1,6 @@
 {
   "name": "quackage",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Building.  Testing.  Quacking.",
   "main": "source/Quackage.js",
   "scripts": {
@@ -40,8 +40,8 @@
     "./source/utility/Quackage-Execute-Process.js": "./source/utility/Quackage-Execute-Process-Base.js"
   },
   "keywords": [
-    "entity",
-    "behavior"
+    "templates",
+    "metapackage"
   ],
   "author": "Steven Velozo <steven@velozo.com> (http://velozo.com/)",
   "license": "MIT",
@@ -50,8 +50,8 @@
   },
   "homepage": "https://github.com/stevenvelozo/quackage",
   "dependencies": {
-    "@babel/core": "^7.22.1",
-    "@babel/preset-env": "^7.22.4",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
     "browserify": "^17.0.0",
     "chai": "4.3.7",
     "commander": "^10.0.1",
@@ -63,7 +63,7 @@
     "mocha": "10.2.0",
     "npm-check-updates": "^16.10.12",
     "nyc": "^15.1.0",
-    "pict": "^1.0.88",
+    "pict": "^1.0.108",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   }

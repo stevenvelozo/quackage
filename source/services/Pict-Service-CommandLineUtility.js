@@ -23,9 +23,9 @@ class CommandLineUtility extends libPict.ServiceProviderBase
 
 		this._Command = new libCommander();
 
-		this._Command.name(this.options.Command)
-			.description(this.options.Description)
-			.version(this.options.Version);
+		this._Command.name(this.options.Command);
+		this._Command.description(this.options.Description)
+		this._Command.version(this.options.Version, '-v, --version', 'output the current version');
 	}
 
 	createCommand(pCommandName, pCommandDescription)

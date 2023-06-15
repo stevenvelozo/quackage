@@ -49,12 +49,14 @@
 		"start": "node {~Data:AppData.Package.main~}",
 
 		"test": "./node_modules/.bin/mocha -u tdd -R spec",
+		"tests": "./node_modules/mocha/bin/_mocha -u tdd --exit -R spec --grep",
+
 		"coverage": "./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov ./node_modules/mocha/bin/_mocha -- -u tdd -R spec",
 
 		"build": "npx quack build",
 
 		"docker-dev-build": "docker build ./ -f Dockerfile_LUXURYCode -t {~Data:AppData.Package.name~}-image:local",
-		"docker-dev-run": "docker run -it -d --name {~Data:AppData.Package.name~}-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/{~Data:AppData.Package.name~}\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" {~Data:AppData.Package.name~}-image:local",
+		"docker-dev-run": "docker run -it -d --name {~Data:AppData.Package.name~}-dev -p {~RandomNumber:10000,50000~}:8080 -p {~RandomNumber:10000,50000~}:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/{~Data:AppData.Package.name~}\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" {~Data:AppData.Package.name~}-image:local",
 		"docker-dev-shell": "docker exec -it {~Data:AppData.Package.name~}-dev /bin/bash"
 	},
 	"CopyAfterBuild": [],

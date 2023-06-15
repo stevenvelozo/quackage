@@ -91,7 +91,7 @@ class QuackageCommandBuildTemplates extends libCommandLineCommand
 					(pEnumerationError) =>
 					{
 						if (pEnumerationError)
-							return fCallback(`Error during bulk catalog of library [${pLibraryName}] folder [${pRelativeFolder}]: ${pEnumerationError}`);
+							return fCallback(`Error during recursive template generation in folder [${pPath}]: ${pEnumerationError}`);
 						return fCallback();
 					});
 			});
@@ -135,7 +135,22 @@ class QuackageCommandBuildTemplates extends libCommandLineCommand
 						{
 							return fCallback(`Error building templates for ${pPath}: ${pEnumerationError}`, pEnumerationError);
 						}
-						libFS.writeFileSync(`${this.fable.AppData.CWD}/.quackage-templates.json`, (JSON.stringify(this.templateSets, null, 4)));
+						let tmpExistingTemplateSets = {};
+						// Switch to merging templates
+						if (libFS.existsSync(`${this.fable.AppData.CWD}/.quackage-templates.json`))
+						{
+							try
+							{
+								let tmpExistingTemplateFile = libFS.readFileSync(`${this.fable.AppData.CWD}/.quackage-templates.json`, 'utf8');
+								tmpExistingTemplateSets = this.fable.Utility.extend({}, JSON.parse(tmpExistingTemplateFile));
+							}
+							catch (pError)
+							{
+								this.log.error(`Error reading existing .quackage-templates.json template file: ${pError}`);
+							}
+						}
+						let tmpNewTemplateSets = this.fable.Utility.extend({}, tmpExistingTemplateSets, this.templateSets);
+						libFS.writeFileSync(`${this.fable.AppData.CWD}/.quackage-templates.json`, (JSON.stringify(tmpNewTemplateSets, null, 4)));
 						return fCallback();
 					});
 			});
@@ -146,7 +161,7 @@ class QuackageCommandBuildTemplates extends libCommandLineCommand
 		let tmpCallback = (typeof(fCallback) === 'function') ? fCallback : ()=>{};
 		let tmpCWDFolderPath = libPath.resolve(`${this.fable.AppData.CWD}/${pPath}`);
 		// Execute the command
-		this.log.info(`Creating boilerplate template(s) for [${tmpCWDFolderPath}]...`);
+		this.log.info(`Creating template(s) for [${tmpCWDFolderPath}] into "./quackage-templates.json"...`);
 
 		return this.generateTemplatesFromFolder(tmpCWDFolderPath, tmpCallback);
 	};
