@@ -94,11 +94,10 @@ libGulp.task('minified',
 		.pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
 		.pipe(libVinylBuffer())
 		.pipe(libSourcemaps.init({loadMaps: true}))
-				// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
-				//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
-				.pipe(libBabel())
-				.pipe(libTerser())
-				.on('error', console.log)
+		// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
+		//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
+		.pipe(libBabel())
+		.pipe(libTerser()).on('error', console.log)
 		.pipe(libSourcemaps.write('./'))
 		.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
 });
@@ -117,10 +116,10 @@ libGulp.task('debug',
 		return tmpBrowserify.bundle()
 			.pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
 			.pipe(libVinylBuffer())
-					// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
-					//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
-					.pipe(libBabel())
-					.on('error', console.log)
+			.pipe(libSourcemaps.init({loadMaps: true}))
+			// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
+			//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
+			.pipe(libBabel()).on('error', console.log)
 			.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
 	});
 

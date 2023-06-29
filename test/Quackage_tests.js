@@ -26,6 +26,7 @@ suite
 					'Quackage should load up okay.',
 					function()
 					{
+						// How doth the little crocodile automatically test the cli-only utility well?
 						let testQuackage = new libQuackage();
 						Expect(testQuackage.settings.Product).to.equal('ApplicationNameHere')
 					}

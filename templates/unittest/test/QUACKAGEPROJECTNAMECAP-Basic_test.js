@@ -1,5 +1,5 @@
 /*
-	Unit tests for {~PascalCaseIdentifier:AppData.Package.name~} {~Data:Record.Scope~}
+	Unit tests for {~PascalCaseIdentifier:AppData.Package.name~} v.${_Package.version} {~Data:Record.Scope~}
 */
 
 const Chai = require('chai');
@@ -9,14 +9,14 @@ const lib{~PascalCaseIdentifier:AppData.Package.name~} = require(`../{~Data:AppD
 
 suite
 (
-	'{~PascalCaseIdentifier:AppData.Package.name~} {~Data:Record.Scope~}',
+	'{~PascalCaseIdentifier:AppData.Package.name~} {~Data:Record.Scope~} Suite',
 	() =>
 	{
 		setup(() => { });
 
 		suite
 			(
-				'Basic {~Data:Record.Scope~} Tests',
+				'Basic ${_Package.name}.v.${_Package.version} {~Data:Record.Scope~} Tests',
 				() =>
 				{
 					test(

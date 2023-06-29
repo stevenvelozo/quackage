@@ -55,7 +55,7 @@ const libPictExtension = require(`../${_Package.main}`);
 
 suite
 (
-	`Basic ${_Package.name}v${_Package.version} tests`,
+	`Basic ${_Package.name}.v.${_Package.version} tests`,
 	() =>
 	{
 		setup(() => { });
