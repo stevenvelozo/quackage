@@ -48,8 +48,8 @@
 	{
 		"start": "node {~Data:AppData.Package.main~}",
 
-		"test": "./node_modules/.bin/mocha -u tdd -R spec",
-		"tests": "./node_modules/mocha/bin/_mocha -u tdd --exit -R spec --grep",
+		"test": "npx mocha -u tdd -R spec",
+		"tests": "npx mocha -u tdd --exit -R spec --grep",
 
 		"coverage": "./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov ./node_modules/mocha/bin/_mocha -- -u tdd -R spec",
 
