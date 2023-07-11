@@ -1,6 +1,6 @@
 {
   "name": "quackage",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Building.  Testing.  Quacking.",
   "main": "source/Quackage.js",
   "scripts": {
@@ -11,8 +11,8 @@
     "build": "./node_modules/.bin/gulp build"
   },
   "bin": {
-    "quack": "./cli/quack",
-    "qua": "./cli/quack"
+    "quack": "./source/Quackage-Run.js",
+    "qua": "./source/Quackage-Run.js"
   },
   "mocha": {
     "diff": true,
@@ -63,8 +63,11 @@
     "mocha": "10.2.0",
     "npm-check-updates": "^16.10.13",
     "nyc": "^15.1.0",
-    "pict": "^1.0.113",
+    "pict-service-commandlineutility": "^1.0.5",
+    "resolve-package-path": "^4.0.3",
+    "resolve-pkg": "^2.0.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
-  }
+  },
+  "devDependencies": {}
 }

@@ -21,11 +21,6 @@ class BaseQuackageProcessExecutionService extends libQuackageExecuteProcessBase
 		return libPath.resolve(`${__dirname}/../..`);
 	}
 
-	node_modules_folder()
-	{
-		return libPath.resolve(`${this.quackagefolder}/..`);
-	}
-
 	exitParentProcess(pCode)
 	{
 		process.exit(pCode);

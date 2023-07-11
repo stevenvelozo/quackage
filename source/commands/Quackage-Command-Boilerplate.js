@@ -1,4 +1,4 @@
-const libCommandLineCommand = require('../services/Pict-Service-CommandLineCommand.js');
+const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
 const libOS = require('os');
 const libPath = require('path');
 
@@ -13,14 +13,10 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 
 		this.options.CommandArguments.push({ Name: '<fileset>', Description: 'The boilerplate fileset to generate.' });
 
-		this.options.CommandOptions.push({ Name: '-s, --scope [scope]', Description: 'A "scope" for the template (used for things like unit tests)', Default: 'BoilerplateScope' });
-		this.options.CommandOptions.push({ Name: '-d, --description [description]', Description: 'An extra content string used as a description', Default: '' });
-		this.options.CommandOptions.push({ Name: '-o, --outputfolder [output_folder]', Description: 'Where to write the .quackage-templates.json file', Default: '' });
+		this.options.CommandOptions.push({ Name: '-s, --scope [scope]', Description: 'A "scope" for the template (used for things like unit tests)', Default: 'Default' });
 
 		this.options.Aliases.push('boil');
 		this.options.Aliases.push('bp');
-
-		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.fable.AppData.QuackagePackage, null, 4));
 
 		try
 		{
@@ -36,11 +32,12 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 		this.addCommand();
 	}
 
-	run(pFileset, pOptions, fCallback)
+	onRunAsync(fCallback)
 	{
-		let tmpScope = pOptions.scope;
+		let tmpTemplateFileSet = this.ArgumentString;
+		let tmpScope = this.CommandOptions.scope;
 		// Execute the command
-		this.log.info(`Creating boilerplate file(s) for [${pFileset}] Scoped as ${tmpScope}...`);
+		this.log.info(`Creating boilerplate file(s) for [${tmpTemplateFileSet}] Scoped as ${tmpScope}...`);
 
 		// Check if there is a .quackage-boilerplate.json in either the current directory or the user's home directory.
 		let tmpCWDFilesetPath = `${this.fable.AppData.CWD}/.quackage-templates.json`;
@@ -65,7 +62,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 				if (tmpCWDFileset)
 				{
 					this.log.info(`...Boilerplate fileset loaded from [${tmpCWDFilesetPath}]`);
-					this.log.info(`...Merging boilerplate fileset [${tmpCWDFilesetPath}] with [${pFileset}]`);
+					this.log.info(`...Merging boilerplate fileset [${tmpCWDFilesetPath}] with [${tmpTemplateFileSet}]`);
 					this.fileSet = this.services.Utility.extend(this.fileSet, tmpCWDFileset);
 				}
 			}
@@ -88,30 +85,26 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 				if (tmpHomeFileset)
 				{
 					this.log.info(`...Boilerplate fileset loaded from [${tmpHomeFilesetPath}]`);
-					this.log.info(`...Merging boilerplate fileset [${tmpHomeFilesetPath}] with [${pFileset}]`);
+					this.log.info(`...Merging boilerplate fileset [${tmpHomeFilesetPath}] with [${tmpTemplateFileSet}]`);
 					this.fileSet = this.services.Utility.extend(this.fileSet, tmpHomeFileset);
 				}
 			}
 		}
 
 		// Check if the fileset exists
-		if (!this.fileSet[pFileset])
+		if (!this.fileSet[tmpTemplateFileSet])
 		{
-			this.log.error(`The requested fileset [${pFileset}] does not exist!`);
-			if (typeof (fCallback) == 'function')
-			{
-				return fCallback();
-			}
-			return false;
+			this.log.error(`The requested fileset [${tmpTemplateFileSet}] does not exist!`);
+			return fCallback();
 		}
 
 		// Build the boilerplate state
-		let tmpBoilerPlateRecord = this.fileSet[pFileset];
-		tmpBoilerPlateRecord.FileSetName = pFileset;
+		let tmpBoilerPlateRecord = this.fileSet[tmpTemplateFileSet];
+		tmpBoilerPlateRecord.FileSetName = tmpTemplateFileSet;
 
 		tmpBoilerPlateRecord.Scope = tmpScope;
-		tmpBoilerPlateRecord.Content = (typeof(pOptions.content) == 'string') ? pOptions.content : '';
-		tmpBoilerPlateRecord.CommandOptions = pOptions;
+		tmpBoilerPlateRecord.Content = (typeof(this.CommandOptions.content) == 'string') ? this.CommandOptions.content : '';
+		tmpBoilerPlateRecord.CommandOptions = this.CommandOptions;
 
 		// Load each template in the fileset into the template provider
 		for (let i = 0; i < tmpBoilerPlateRecord.Files.length; i++)
@@ -130,55 +123,57 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 			}
 		}
 
-		for (let i = 0; i < tmpBoilerPlateRecord.Files.length; i++)
-		{
-			// Check if each file exists
-			let tmpFile = tmpBoilerPlateRecord.Files[i];
-			// File paths are templates too!
-			let tmpFilePath = libFilePersistence.joinPath(this.fable.parseTemplate(tmpFile.Path, tmpBoilerPlateRecord));
+		this.fable.Utility.eachLimit(tmpBoilerPlateRecord.Files, 1, 
+			(pFile, fFolderCallback)=>
+			{
+				// Check if each file exists
+				let tmpFile = pFile;
+				// File paths are templates too!
+				let tmpFilePath = libFilePersistence.joinPath(this.fable.parseTemplate(tmpFile.Path, tmpBoilerPlateRecord));
 
-			let tmpFileFolder = libPath.dirname(tmpFilePath);
+				let tmpFileFolder = libPath.dirname(tmpFilePath);
 
-			tmpFilePath = tmpFilePath.replace('QUACKAGEPROJECTNAMECAP', this.services.DataFormat.capitalizeEachWord(this.fable.AppData.Package.name))
-										.replace('QUACKAGESCOPE', tmpScope);
+				tmpFilePath = tmpFilePath.replace('QUACKAGEPROJECTNAMECAP', this.services.DataFormat.capitalizeEachWord(this.fable.AppData.Package.name))
+											.replace('QUACKAGESCOPE', tmpScope);
 
-			libFilePersistence.makeFolderRecursive(tmpFileFolder,
-				(pError)=>
-				{
-					if (pError)
+				libFilePersistence.makeFolderRecursive(tmpFileFolder,
+					(pError)=>
 					{
-						this.log.error(`Error creating folder [${tmpFileFolder}] for boilerplate scope [${tmpScope}]: ${pError.message}`);
-					}
+						if (pError)
+						{
+							this.log.error(`Error creating folder [${tmpFileFolder}] for boilerplate scope [${tmpScope}]: ${pError.message}`);
+						}
 
-					if (tmpBoilerPlateRecord.hasOwnProperty('options'))
-					{
-						tmpBoilerPlateRecord.options = pOptions;
-					}
+						if (tmpBoilerPlateRecord.hasOwnProperty('options'))
+						{
+							tmpBoilerPlateRecord.options = this.CommandOptions;
+						}
 
-					// Write the file
-					if (libFilePersistence.existsSync(tmpFilePath) && !pOptions.force)
-					{
-						// It exists!  Show the user the command to back it up and/or delete it.  Don't generate it.
-						this.log.error(`The requested file [${tmpFilePath}] already exists!`);
-						this.log.info(`To back it up, run: [ mv "${tmpFilePath}" "${tmpFilePath}_QuackageBackup_${this.services.DataGeneration.randomNumericString(4, 9998)}.bak" ]`);
-						this.log.info(`To delete it, run:  [ rm "${tmpFilePath}" ]`);
-					}
-					else
-					{
-						// It doesn't exist!  Generate it.
-						this.log.info(`Writing boilerplate file [${tmpFilePath}]!`);
-						// Keep in mind the templates also have access to the package.json and the .quackage.json data in the AppData object.
-						libFilePersistence.writeFileSync(tmpFilePath, this.fable.parseTemplate(tmpFile.Content, tmpBoilerPlateRecord));
-					}
+						// Write the file
+						if (libFilePersistence.existsSync(tmpFilePath) && !this.CommandOptions.force)
+						{
+							// It exists!  Show the user the command to back it up and/or delete it.  Don't generate it.
+							this.log.error(`The requested file [${tmpFilePath}] already exists!`);
+							this.log.info(`To back it up, run: [ mv "${tmpFilePath}" "${tmpFilePath}_QuackageBackup_${this.services.DataGeneration.randomNumericString(4, 9998)}.bak" ]`);
+							this.log.info(`To delete it, run:  [ rm "${tmpFilePath}" ]`);
+						}
+						else
+						{
+							// It doesn't exist!  Generate it.
+							this.log.info(`Writing boilerplate file [${tmpFilePath}]!`);
+							// Keep in mind the templates also have access to the package.json and the .quackage.json data in the AppData object.
+							libFilePersistence.writeFileSync(tmpFilePath, this.fable.parseTemplate(tmpFile.Content, tmpBoilerPlateRecord));
+						}
 
-					if (typeof (fCallback) == 'function')
-					{
-						return fCallback();
-					}
-				});
+						return fFolderCallback();
+					});
+			},(pError)=>
+			{
+				return fCallback();
+			});
 
 		}
 	};
-}
+
 
 module.exports = QuackageCommandBoilerplate;

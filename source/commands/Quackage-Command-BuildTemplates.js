@@ -1,4 +1,4 @@
-const libCommandLineCommand = require('../services/Pict-Service-CommandLineCommand.js');
+const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
 const libOS = require('os');
 const libFS = require('fs');
 const libPath = require('path');
@@ -156,14 +156,13 @@ class QuackageCommandBuildTemplates extends libCommandLineCommand
 			});
 	}
 
-	run(pPath, pOptions, fCallback)
+	onRunAsync(fCallback)
 	{
-		let tmpCallback = (typeof(fCallback) === 'function') ? fCallback : ()=>{};
-		let tmpCWDFolderPath = libPath.resolve(`${this.fable.AppData.CWD}/${pPath}`);
+		let tmpPath = this.ArgumentString;
+		let tmpCWDFolderPath = libPath.resolve(`${this.fable.AppData.CWD}/${tmpPath}`);
 		// Execute the command
 		this.log.info(`Creating template(s) for [${tmpCWDFolderPath}] into "./quackage-templates.json"...`);
-
-		return this.generateTemplatesFromFolder(tmpCWDFolderPath, tmpCallback);
+		return this.generateTemplatesFromFolder(tmpCWDFolderPath, fCallback);
 	};
 }
 

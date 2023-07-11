@@ -1,5 +1,5 @@
 /*
-	Unit tests for {~PascalCaseIdentifier:AppData.Package.name~} v.${_Package.version} {~Data:Record.Scope~}
+	Unit tests for {~PascalCaseIdentifier:AppData.Package.name~} v.{~D:AppData.Package.version~} {~Data:Record.Scope~}
 */
 
 const Chai = require('chai');
@@ -16,11 +16,11 @@ suite
 
 		suite
 			(
-				'Basic ${_Package.name}.v.${_Package.version} {~Data:Record.Scope~} Tests',
+				'Basic {~D:_Package.name~}.v.{~D:_Package.version~} {~D:Record.Scope~} Tests',
 				() =>
 				{
 					test(
-							'Object Instantiation # {~RandomNumberString:1,9~}',
+							'Object Instantiation',
 							(fDone) =>
 							{
 								let _{~PascalCaseIdentifier:AppData.Package.name~} = new lib{~PascalCaseIdentifier:AppData.Package.name~}();

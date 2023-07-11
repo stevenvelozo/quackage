@@ -1,5 +1,5 @@
+const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
 const libFS = require('fs');
-const libCommandLineCommand = require('../services/Pict-Service-CommandLineCommand.js');
 
 class QuackageCommandUpdatePackage extends libCommandLineCommand
 {
@@ -10,7 +10,7 @@ class QuackageCommandUpdatePackage extends libCommandLineCommand
 		this.options.CommandKeyword = 'updatepackage';
 		this.options.Description = 'Update your package.json to support testing, building and luxury configurations';
 
-		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.fable.AppData.QuackagePackage, null, 4));
+		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.pict.ProgramConfiguration, null, 4));
 
 		this.options.CommandOptions.push({ Name: '-f, --force', Description: 'Force overwrite anything in the package.json; use at your own quacking peril' });
 
@@ -18,12 +18,12 @@ class QuackageCommandUpdatePackage extends libCommandLineCommand
 		this.addCommand();
 	}
 
-	run(pOptions, pCommand, fCallback)
+	onRunAsync(fCallback)
 	{
 		// Execute the command
 		this.log.info(`Updating package.json...`);
 
-		let tmpOptions = pOptions;
+		let tmpOptions = this.CommandOptions;
 
 		// The package.json from the project we are quackin at
 		let tmpProjectPackage = JSON.parse(JSON.stringify(this.fable.AppData.Package));
@@ -93,10 +93,7 @@ class QuackageCommandUpdatePackage extends libCommandLineCommand
 		this.log.info(`Writing ${this.fable.AppData.CWD}/package.json ...`);
 		libFS.writeFileSync(`${this.fable.AppData.CWD}/package.json`, JSON.stringify(tmpProjectPackage, null, 4));
 
-		if (typeof (fCallback) == 'function')
-		{
-			return fCallback();
-		}
+		return fCallback();
 	};
 }
 

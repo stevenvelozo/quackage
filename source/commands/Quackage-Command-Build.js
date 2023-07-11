@@ -1,5 +1,5 @@
+const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
 const libFS = require('fs');
-const libCommandLineCommand = require('../services/Pict-Service-CommandLineCommand.js');
 
 class QuackageCommandBuild extends libCommandLineCommand
 {
@@ -10,36 +10,28 @@ class QuackageCommandBuild extends libCommandLineCommand
 		this.options.CommandKeyword = 'build';
 		this.options.Description = 'Build your npm module into a dist folder';
 
-		this.fable.TemplateProvider.addTemplate('Gulpfile-Configuration', JSON.stringify(this.fable.AppData.QuackagePackage.GulpfileConfiguration, null, 4));
-		this.fable.TemplateProvider.addTemplate('Gulpfile-QuackageBase', this.fable.AppData.QuackagePackage.QuackageBaseGulpfile);
-
-		this.options.CommandArguments.push({ Name: '[buildactions]', Description: 'The optional build action(s) to execute; otherwise run all of them', Default: 'ALL' });
-
 		// Auto add the command on initialization
 		this.addCommand();
 	}
 
-	run(pArgumentString, pOptions, pCommand, fCallback)
+	onRunAsync(fCallback)
 	{
-		let tmpActionsToExecute = pArgumentString.toUpperCase();
+		this.fable.TemplateProvider.addTemplate('Gulpfile-Configuration', JSON.stringify(this.pict.ProgramConfiguration.GulpfileConfiguration, null, 4));
+		this.fable.TemplateProvider.addTemplate('Gulpfile-QuackageBase', this.pict.ProgramConfiguration.QuackageBaseGulpfile);
+
 		let tmpActionSet = [];
 
-		let tmpOptions = pOptions;
-
-		this.log.info(`Building browserified and minified versions of your module ...`, tmpOptions);
+		this.log.info(`Building browserified and minified versions of your module ...`);
 
 		// ##. Figure out which actions to execute
-		for (let i = 0; i < this.fable.AppData.QuackagePackage.GulpExecutions.length; i++)
+		for (let i = 0; i < this.pict.ProgramConfiguration.GulpExecutions.length; i++)
 		{
-			if (tmpActionsToExecute == 'ALL' || tmpActionsToExecute.includes(this.fable.AppData.QuackagePackage.GulpExecutions[i].Name.toUpperCase()))
-			{
-				tmpActionSet.push(this.fable.AppData.QuackagePackage.GulpExecutions[i]);
-			}
+			tmpActionSet.push(this.pict.ProgramConfiguration.GulpExecutions[i]);
 		}
 
 		if (tmpActionSet.length < 1)
 		{
-			this.log.error(`No actions to execute for the configuration hash [${pString}]`);
+			this.log.error(`No actions to execute for building -- check your quackage configuration!`);
 			return false;
 		}
 
@@ -65,7 +57,7 @@ class QuackageCommandBuild extends libCommandLineCommand
 				}
 
 				// ## .babelrc
-				if (this.fable.AppData.QuackagePackage.DefaultBabelRC)
+				if (this.pict.ProgramConfiguration.DefaultBabelRC)
 				{
 					if (libFS.existsSync(`${this.fable.AppData.CWD}/.babelrc`))
 					{
@@ -73,7 +65,7 @@ class QuackageCommandBuild extends libCommandLineCommand
 					}
 					else
 					{
-						libFS.writeFileSync(`${this.fable.AppData.CWD}/.babelrc`, JSON.stringify(this.fable.AppData.QuackagePackage.DefaultBabelRC, null, 4));
+						libFS.writeFileSync(`${this.fable.AppData.CWD}/.babelrc`, JSON.stringify(this.pict.ProgramConfiguration.DefaultBabelRC, null, 4));
 					}
 				}
 
@@ -92,19 +84,17 @@ class QuackageCommandBuild extends libCommandLineCommand
 			(pError) =>
 			{
 				// Now process the CopyAfterBuild directives
-				if (this.fable.AppData.QuackagePackage.CopyAfterBuild.length > 0)
+				if (this.pict.ProgramConfiguration.CopyAfterBuild.length > 0)
 				{
-					//this.log.info(`Copying the following files to :`, { Files: this.fable.AppData.QuackagePackage.CopyAfterBuild });
-					for (let i = 0; i < this.fable.AppData.QuackagePackage.CopyAfterBuild.length; i++)
+					//this.log.info(`Copying the following files to :`, { Files: this.pict.ProgramConfiguration.CopyAfterBuild });
+					for (let i = 0; i < this.pict.ProgramConfiguration.CopyAfterBuild.length; i++)
 					{
 						// TODO: FilePersistence needs a copy recursive with globbing.
-						//libFS.copyFileSync(`${this.fable.AppData.CWD}/${this.fable.AppData.QuackagePackage.CopyAfterBuild[i]}`, `${this.fable.AppData.CWD}/dist/${this.fable.AppData.QuackagePackage.CopyAfterBuild[i]}`);
+						//libFS.copyFileSync(`${this.fable.AppData.CWD}/${this.pict.ProgramConfiguration.CopyAfterBuild[i]}`, `${this.fable.AppData.CWD}/dist/${this.pict.ProgramConfiguration.CopyAfterBuild[i]}`);
 					}
 				}
-				if (typeof (fCallback) == 'function')
-				{
-					return fCallback(pError);
-				}
+
+				return fCallback(pError);
 			});
 	};
 }

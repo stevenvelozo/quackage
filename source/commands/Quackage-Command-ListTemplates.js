@@ -1,4 +1,4 @@
-const libCommandLineCommand = require('../services/Pict-Service-CommandLineCommand.js');
+const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
 const libOS = require('os');
 const libPath = require('path');
 
@@ -14,7 +14,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 		this.options.Aliases.push('list');
 		this.options.Aliases.push('lt');
 
-		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.fable.AppData.QuackagePackage, null, 4));
+		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.pict.ProgramConfiguration, null, 4));
 
 		try
 		{
@@ -30,11 +30,10 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 		this.addCommand();
 	}
 
-	run(pFileset, pOptions, fCallback)
+	onRunAsync(fCallback)
 	{
-		let tmpScope = pOptions.scope;
 		// Execute the command
-		this.log.info(`Creating boilerplate file(s) for [${pFileset}] Scoped as ${tmpScope}...`);
+		this.log.info(`Listing boilerplate file(s)...`);
 
 		// Check if there is a .quackage-boilerplate.json in either the current directory or the user's home directory.
 		let tmpCWDFilesetPath = `${this.fable.AppData.CWD}/.quackage-templates.json`;
@@ -59,7 +58,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 				if (tmpCWDFileset)
 				{
 					this.log.info(`...Boilerplate fileset loaded from [${tmpCWDFilesetPath}]`);
-					this.log.info(`...Merging boilerplate fileset [${tmpCWDFilesetPath}] with [${pFileset}]`);
+					this.log.info(`...Merging boilerplate fileset [${tmpCWDFilesetPath}] with the base fileset`);
 					this.fileSet = this.services.Utility.extend(this.fileSet, tmpCWDFileset);
 				}
 			}
@@ -82,7 +81,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 				if (tmpHomeFileset)
 				{
 					this.log.info(`...Boilerplate fileset loaded from [${tmpHomeFilesetPath}]`);
-					this.log.info(`...Merging boilerplate fileset [${tmpHomeFilesetPath}] with [${pFileset}]`);
+					this.log.info(`...Merging boilerplate fileset [${tmpHomeFilesetPath}] with the base fileset`);
 					this.fileSet = this.services.Utility.extend(this.fileSet, tmpHomeFileset);
 				}
 			}
@@ -101,10 +100,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 			this.log.info(`${this.fable.DataFormat.stringPadEnd(tmpFileSetKeys[i], 40, ' _')} (${tmpFileSetFileCount} templated files)`);
 		}
 
-		if (typeof(fCallback) === 'function')
-		{
-			return fCallback();
-		}
+		return fCallback();
 	};
 }
 

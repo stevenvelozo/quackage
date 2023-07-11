@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/source/Quackage.js",
+            "program": "${workspaceFolder}/debug/Harness.js",
             "args":["lint", "./templates"]
         }
     ]

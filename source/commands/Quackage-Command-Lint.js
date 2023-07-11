@@ -1,4 +1,4 @@
-const libCommandLineCommand = require('../services/Pict-Service-CommandLineCommand.js');
+const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
 
 class QuackageCommandLint extends libCommandLineCommand
 {
@@ -9,14 +9,14 @@ class QuackageCommandLint extends libCommandLineCommand
 		this.options.CommandKeyword = 'lint';
 		this.options.Description = 'Check your package.json for testing, building and luxury configurations';
 
-		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.fable.AppData.QuackagePackage, null, 4));
-
 		// Auto add the command on initialization
 		this.addCommand();
 	}
 
-	run(pOptions, pCommand, fCallback)
+	onRunAsync(fCallback)
 	{
+		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.pict.ProgramConfiguration, null, 4));
+
 		// Execute the command
 		this.log.info(`Linting package.json...`);
 
@@ -75,10 +75,7 @@ class QuackageCommandLint extends libCommandLineCommand
 			}
 		}
 
-		if (typeof (fCallback) == 'function')
-		{
-			return fCallback();
-		}
+		return fCallback();
 	};
 }
 

@@ -4,7 +4,7 @@
 * @author      Steven Velozo <steven@velozo.com>
 */
 
-var libQuackage = require('../source/Quackage.js');
+var libQuackage = require('../source/Quackage-CLIProgram.js');
 
 var Chai = require("chai");
 var Expect = Chai.expect;
@@ -27,8 +27,8 @@ suite
 					function()
 					{
 						// How doth the little crocodile automatically test the cli-only utility well?
-						let testQuackage = new libQuackage();
-						Expect(testQuackage.settings.Product).to.equal('ApplicationNameHere')
+						let testQuackage = libQuackage;
+						Expect(testQuackage.settings.Product).to.equal('Quackage')
 					}
 				);
 			}
