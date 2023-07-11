@@ -43,7 +43,7 @@ catch (pError)
 {
 	_Pict.log.error(`No package.json found in [${_Pict.AppData.CWD}].  Please run quackage from a folder with a package.json file for maximum awesome.`);
 	_Pict.log.info(`Loading a default package.json...`);
-	_Pict.AppData.Package = require('./Default-Package.json');
+	_Pict.AppData.Package = require('./Default-NpmPackage.json');
 }
 finally
 {
