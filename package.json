@@ -1,6 +1,6 @@
 {
   "name": "quackage",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Building.  Testing.  Quacking.",
   "main": "source/Quackage.js",
   "scripts": {
