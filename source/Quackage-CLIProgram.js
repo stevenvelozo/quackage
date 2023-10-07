@@ -25,10 +25,10 @@ let _Pict = new libCLIProgram(
 	]);
 
 // Instantiate the file persistence service
-_Pict.serviceManager.instantiateServiceProvider('FilePersistence');
-_Pict.serviceManager.instantiateServiceProvider('DataGeneration');
+_Pict.instantiateServiceProvider('FilePersistence');
+_Pict.instantiateServiceProvider('DataGeneration');
 // Add the Quackage Process Management service
-_Pict.serviceManager.addAndInstantiateServiceType('QuackageProcess', require('./services/Quackage-Execute-Process.js'));
+_Pict.addAndInstantiateServiceType('QuackageProcess', require('./services/Quackage-Execute-Process.js'));
 
 // Grab the current working directory for the quackage
 _Pict.AppData.CWD = _Pict.QuackageProcess.cwd();
