@@ -9,6 +9,9 @@ class BaseQuackageProcessExecutionService extends libQuackageExecuteProcessBase
 		super(pFable, pManifest, pServiceHash);
 
 		this.serviceType = 'QuackageProcess';
+
+		this.LogToDirectConsole = true;
+		this.LogToFableLog = false;
 	}
 
 	cwd()
@@ -38,12 +41,26 @@ class BaseQuackageProcessExecutionService extends libQuackageExecuteProcessBase
 		tmpProcess.stdout.on('data',
 			(pConsoleOutput) =>
 			{
-				this.log.trace(pConsoleOutput);
+				if (this.LogToDirectConsole)
+				{
+					console.log(pConsoleOutput.toString());
+				}
+				if (this.LogToFableLog)
+				{
+					this.log.info(pConsoleOutput);
+				}
 			});
 		tmpProcess.stderr.on('data',
 			(pConsoleOutput) =>
 			{
-				this.log.error(pConsoleOutput);
+				if (this.LogToDirectConsole)
+				{
+					console.log(pConsoleOutput.toString());
+				}
+				if (this.LogToFableLog)
+				{
+					this.log.error(pConsoleOutput);
+				}
 			});
 
 		tmpProcess.stderr.on('error',
@@ -56,7 +73,7 @@ class BaseQuackageProcessExecutionService extends libQuackageExecuteProcessBase
 		tmpProcess.stderr.on('close',
 			(pError) =>
 			{
-				this.log.info(`Process completed successfully, with a quack!`);
+				this.log.info(`Process completed successfully with a quack!`);
 				return fCallback(pError);
 			});
 	}

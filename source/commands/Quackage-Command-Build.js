@@ -77,23 +77,36 @@ class QuackageCommandBuild extends libCommandLineCommand
 				//libFS.writeFileSync(`${this.fable.AppData.CWD}/gulpfile.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
 
 				// Now execute the gulpfile using our custom service provider!
-				// We are forcing the gulp to run from the node_modules folder of the package -- this allows you to run quackage globally
-				let tmpGulpLocation = `${this.fable.AppData.CWD}/node_modules/.bin/gulp`;
+				// We are forcing the gulp to run from the node_modules folder of the package -- this allows you to run quackage globally or from the root of a monorepo
+				let tmpCWDGulpLocation = `${this.fable.AppData.CWD}/node_modules/.bin/gulp`;
+				let tmpRelativePackageGulpLocation = `${__dirname}/../../../.bin/gulp`;
+				let tmpGitRepositoryGulpLocation = `${__dirname}/../../node_modules/.bin/gulp`;
+				let tmpGulpLocation = tmpCWDGulpLocation;
+				// Check that gulp exists here
+				if (!libFS.existsSync(tmpGulpLocation))
+				{
+					this.log.info(`CWD Location does not contain an installation of gulp at [${tmpCWDGulpLocation}]; checking relative to the quackage package...`);
+					// Try the folder relative to quackage (wherever this packages' node modules are)
+					tmpGulpLocation = tmpRelativePackageGulpLocation;
+				}
+				if (!libFS.existsSync(tmpGulpLocation))
+				{
+					this.log.info(`Relative Quackage Package Location does not contain an installation of gulp at [${tmpRelativePackageGulpLocation}]; checking if you're running from the direct git repository...`);
+					// Try the folder relative to quackage (wherever this packages' node modules are)
+					tmpGulpLocation = tmpGitRepositoryGulpLocation;
+				}
+				if (!libFS.existsSync(tmpGulpLocation))
+				{
+					let tmpErrorMessage = `Not even the git checkout location has an installation of gulp at [${tmpGulpLocation}]... building cannot commence.  We also tried CWD [${tmpCWDGulpLocation}] and relative node_modules [${tmpRelativePackageGulpLocation}].  Sorry!  Maybe you need to run "npm install" somewhere??`;
+					this.log.info(tmpErrorMessage)
+					return fActionCallback(new Error(tmpErrorMessage));
+				}
+				this.log.info(`Quackage found gulp at [${tmpGulpLocation}] ... executing build from there.`);
+
 				this.fable.QuackageProcess.execute(`${tmpGulpLocation}`, [`--gulpfile`, `${this.fable.AppData.CWD}/.gulpfile-quackage.js`], { cwd: this.fable.AppData.CWD }, fActionCallback);
 			},
 			(pError) =>
 			{
-				// Now process the CopyAfterBuild directives
-				if (this.pict.ProgramConfiguration.CopyAfterBuild.length > 0)
-				{
-					//this.log.info(`Copying the following files to :`, { Files: this.pict.ProgramConfiguration.CopyAfterBuild });
-					for (let i = 0; i < this.pict.ProgramConfiguration.CopyAfterBuild.length; i++)
-					{
-						// TODO: FilePersistence needs a copy recursive with globbing.
-						//libFS.copyFileSync(`${this.fable.AppData.CWD}/${this.pict.ProgramConfiguration.CopyAfterBuild[i]}`, `${this.fable.AppData.CWD}/dist/${this.pict.ProgramConfiguration.CopyAfterBuild[i]}`);
-					}
-				}
-
 				return fCallback(pError);
 			});
 	};

@@ -16,12 +16,20 @@ let _Pict = new libCLIProgram(
 		AutoAddConfigurationExplanationCommand: true
 	},
 	[
+		// Management for package.json
 		require('./commands/Quackage-Command-UpdatePackage.js'),
 		require('./commands/Quackage-Command-Lint.js'),
+
+		// Mocha test execution
+		require('./commands/Quackage-Command-RunMochaTests.js'),
+
+		// Gulp build execution (for multiple build targets)
 		require('./commands/Quackage-Command-Build.js'),
+
+		// Template handling
 		require('./commands/Quackage-Command-Boilerplate.js'),
-		require('./commands/Quackage-Command-BuildTemplates.js'),
-		require('./commands/Quackage-Command-ListTemplates.js')
+		require('./commands/Quackage-Command-ListTemplates.js'),
+		require('./commands/Quackage-Command-BuildTemplates.js')
 	]);
 
 // Instantiate the file persistence service
