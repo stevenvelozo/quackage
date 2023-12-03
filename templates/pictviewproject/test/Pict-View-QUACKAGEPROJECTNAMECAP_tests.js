@@ -13,8 +13,8 @@ const Chai = require("chai");
 const Expect = Chai.expect;
 
 // This extends node to have the browser environment globals like window and document.
-const libBrowserEnv = require('browser-env')
-libBrowserEnv();
+//const libBrowserEnv = require('browser-env')
+//libBrowserEnv();
 
 const libPict = require('pict');
 
