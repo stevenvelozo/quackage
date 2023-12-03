@@ -36,6 +36,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 	{
 		let tmpTemplateFileSet = this.ArgumentString;
 		let tmpScope = this.CommandOptions.scope;
+
 		// Execute the command
 		this.log.info(`Creating boilerplate file(s) for [${tmpTemplateFileSet}] Scoped as ${tmpScope}...`);
 
@@ -105,6 +106,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 		tmpBoilerPlateRecord.Scope = tmpScope;
 		tmpBoilerPlateRecord.Content = (typeof(this.CommandOptions.content) == 'string') ? this.CommandOptions.content : '';
 		tmpBoilerPlateRecord.CommandOptions = this.CommandOptions;
+		tmpBoilerPlateRecord.Quackage = this;
 
 		// Load each template in the fileset into the template provider
 		for (let i = 0; i < tmpBoilerPlateRecord.Files.length; i++)

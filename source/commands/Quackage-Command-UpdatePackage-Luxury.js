@@ -7,12 +7,14 @@ class QuackageCommandUpdatePackage extends libCommandLineCommand
 	{
 		super(pFable, pManifest, pServiceHash);
 
-		this.options.CommandKeyword = 'updatepackage';
-		this.options.Description = 'Update your package.json to support streamlined testing, building and coverage';
+		this.options.CommandKeyword = 'luxuryupdatepackage';
+		this.options.Description = 'Update your package.json to build and run luxury code containers';
 
 		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.pict.ProgramConfiguration, null, 4));
 
 		this.options.CommandOptions.push({ Name: '-f, --force', Description: 'Force overwrite anything in the package.json; use at your own quacking peril' });
+
+		this.options.Aliases.push('lux');
 
 		// Auto add the command on initialization
 		this.addCommand();
@@ -57,11 +59,11 @@ class QuackageCommandUpdatePackage extends libCommandLineCommand
 			this.log.error(`There is something egregiously wrong with ${this.fable.AppData.Package.name}:${this.fable.AppData.Package.version}/package.json ... no scripts object found in root.  I will add it...`);
 			tmpProjectPackage.scripts = {};
 		}
-		let tmpQuackageScripts = Object.keys(tmpPrototypePackage.PackageScripts);
+		let tmpQuackageScripts = Object.keys(tmpPrototypePackage.LuxuryPackageScripts);
 		for (let i = 0; i < tmpQuackageScripts.length; i++)
 		{
 			let tmpQuackageScriptKey = tmpQuackageScripts[i];
-			let tmpQuackageScriptValue = tmpPrototypePackage.PackageScripts[tmpQuackageScriptKey];
+			let tmpQuackageScriptValue = tmpPrototypePackage.LuxuryPackageScripts[tmpQuackageScriptKey];
 
 			let tmpScriptExists = tmpProjectPackage.scripts.hasOwnProperty(tmpQuackageScriptKey);
 			let tmpScriptMatches = (tmpProjectPackage.scripts[tmpQuackageScriptKey] == tmpQuackageScriptValue);
