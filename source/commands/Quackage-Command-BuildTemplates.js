@@ -1,5 +1,4 @@
 const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
-const libOS = require('os');
 const libFS = require('fs');
 const libPath = require('path');
 

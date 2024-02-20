@@ -12,6 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/debug/Harness.js",
+            "cwd": "${workspaceFolder}/debug",
             "args":["lint", "./templates"]
         }
     ]

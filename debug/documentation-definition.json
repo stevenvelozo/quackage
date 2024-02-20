@@ -1,0 +1,47 @@
+{
+	"Title": "ACME Documentation",
+
+	"Parts": [
+		{
+			"Title": "Introduction",
+			"GeneratedContentFormatter": "BasicContent",
+			"SourceContentType": "RawMarkdown",
+			"RawMarkdownContent": "# The Introduction\n\n## Things are new?\n\nIt is a multi-line string, markdown. \n\n### Three are new?\n\nanything goes."
+		},
+		{
+			"Title": "Abstract Entities",
+			"GeneratedContentFormatter": "MeadowAbstractEntities",
+			"SourceContentType": "MeadowSchema",
+			"Filters": [
+				{
+					"ForwardLabelMatch": ["model", "entity"]
+				}]
+		},
+		{
+			"Title": "Tables",
+			"GeneratedContentFormatter": "MeadowTables",
+			"SourceContentType": "MeadowSchema",
+			"Filters": [
+				{
+					"ForwardLabelMatch": ["model", "entity"]
+				}]
+		},
+		{
+			"Title": "Example Queries",
+			"GeneratedContentFormatter": "BasicContent",
+			"SourceContentType": "MarkdownContent",
+			"Filters": [
+				{
+					"ForwardLabelMatch": ["model", "example_queries"]
+				}]
+		},
+		{
+			"Title": "All Model Documentation",
+			"GeneratedContentFormatter": "BasicContent",
+			"SourceContentType": "MarkdownContent",
+			"Filters": [
+				{
+					"ForwardLabelMatch": ["model"]
+				}]
+		}]
+}
