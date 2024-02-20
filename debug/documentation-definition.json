@@ -19,7 +19,7 @@
 		},
 		{
 			"Title": "Tables",
-			"GeneratedContentFormatter": "MeadowTables",
+			"GeneratedContentFormatter": "MeadowTableGroups",
 			"SourceContentType": "MeadowSchema",
 			"Filters": [
 				{
@@ -43,5 +43,11 @@
 				{
 					"ForwardLabelMatch": ["model"]
 				}]
-		}]
+		}],
+	"MeadowEntityCategories":
+	{
+		"Book": { "Group": "Paper"},
+		"BookAuthorJoin": { "Group": "Paper"},
+		"Author": { "Group": "People"}
+	}
 }

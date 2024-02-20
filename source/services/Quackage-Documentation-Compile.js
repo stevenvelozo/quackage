@@ -37,12 +37,18 @@ class DocumentationCompile extends libPict.ServiceProviderBase
 				linkRenderer: (pHref, pTitle, pText) =>
 				{
 					// return TeX source to render hyperlinks
-					return ``;
+					return `\\href{${pHref}}{${pTitle} - ${pText}`;
 				},
 				imageRenderer: (pHref, pTitle, pText) =>
 				{
 					// return TeX source to render images
-					return ``;
+					return `
+\\bigskip
+\\begin{center}
+\\includegraphics[width=0.7\\textwidth]{${pHref}}
+\\end{center}
+
+`;
 				}
 			});
 
@@ -124,7 +130,7 @@ class DocumentationCompile extends libPict.ServiceProviderBase
 	{
 		let tmpLaTeX = '';
 
-		let tmpHeaderType = (pHeaderType) ? pHeaderType : 'section';
+		let tmpHeaderType = (pHeaderType) ? pHeaderType : 'subsection';
 
 		tmpLaTeX += `\n\\${tmpHeaderType}{${pMeadowTableSchema.TableName}}\n`;
 		if (pMeadowTableSchema.hasOwnProperty('Description') && pMeadowTableSchema.Description.length > 0)
@@ -252,12 +258,22 @@ class DocumentationCompile extends libPict.ServiceProviderBase
 		return `\n\\part{${pPartTitle}}\n`;
 	}
 
+	generateLaTexSectionTitle(pSectionTitle)
+	{
+		return `\n\\section{${pSectionTitle}}\n`;
+	}
+
 	compileDocumentationPart(pPartDefinition)
 	{
+		let tmpMeadowTables = [];
 		if ((pPartDefinition.SourceContentType == 'MeadowSchema') && (!this.fable.AppData.meadowSchema))
 		{
 			this.log.error(`Part ${pPartDefinition.Title} requires a Meadow schema, but no valid schema was found.`);
 			return false;
+		}
+		else if (this.fable.AppData.meadowSchema)
+		{
+			tmpMeadowTables = Object.keys(this.fable.AppData.meadowSchema.Tables);
 		}
 
 		let tmpPart = (
@@ -298,11 +314,51 @@ class DocumentationCompile extends libPict.ServiceProviderBase
 					}
 				}
 				break;
-			case 'MeadowAbstractEntities':
+
+			case 'MeadowTableGroups':
+				if (!this.fable.AppData.documentDefinition.MeadowEntityCategories)
+				{
+					this.log.error('Part requires MeadowEntityCategories to be defined.');
+					return false;
+				}
+
+				this.log.info('...Compiling Grouped Meadow Schema to LaTeX...');
+				tmpPart.LaTeX_Content = this.generateLaTexPartTitle(pPartDefinition.Title);
+
+				let tmpTableGroups = [];
+				let tmpMeadowEntryCategoryTables = Object.keys(this.fable.AppData.documentDefinition.MeadowEntityCategories);
+				for (let i = 0; i < tmpMeadowEntryCategoryTables.length; i++)
+				{
+					// If it is a new group
+					if ((tmpTableGroups.indexOf(this.fable.AppData.documentDefinition.MeadowEntityCategories[tmpMeadowEntryCategoryTables[i]].Group) == -1) &&
+						// and if the table exists in the schema 
+						this.fable.AppData.meadowSchema.Tables.hasOwnProperty(tmpMeadowEntryCategoryTables[i]))
+					{
+						tmpTableGroups.push(this.fable.AppData.documentDefinition.MeadowEntityCategories[tmpMeadowEntryCategoryTables[i]].Group);
+					}
+				}
+
+				// Now enumerate the groups, create the parts and fill out the tables.
+				for (let i = 0; i < tmpTableGroups.length; i++)
+				{
+					tmpPart.LaTeX_Content += this.generateLaTexSectionTitle(tmpTableGroups[i]);
+
+					for (let k = 0; k < tmpMeadowTables.length; k++)
+					{
+						let tmpTableName = tmpMeadowTables[k];
+						if (this.fable.AppData.documentDefinition.MeadowEntityCategories.hasOwnProperty(tmpTableName) &&
+							this.fable.AppData.documentDefinition.MeadowEntityCategories[tmpTableName].Group == tmpTableGroups[i])
+						{
+							this.log.info(`compiling LaTeX for [${tmpTableName}] in category [${tmpTableGroups[i]}]...`);
+							tmpPart.LaTeX_Content += this.generateLaTeXFromSchema(this.fable.AppData.meadowSchema.Tables[tmpTableName]);
+						};
+					}
+				}
+
+				//let tmpMarkdown = this.generateMarkdownFromSchema(this.fable.AppData.meadowSchema);
+				this.log.info('...Grouped Meadow Schema compiled...');
 				break;
 			case 'MeadowTables':
-				let tmpMeadowTables = Object.keys(this.fable.AppData.meadowSchema.Tables);
-
 				tmpPart.LaTeX_Content = this.generateLaTexPartTitle(pPartDefinition.Title);
 
 				this.log.info('...Compiling Meadow Schema to LaTeX...');
