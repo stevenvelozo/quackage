@@ -308,6 +308,10 @@ class DocumentationCompile extends libPict.ServiceProviderBase
 
 						for (let i = 0; i < tmpContentSet.length; i++)
 						{
+							if (tmpPart.hasOwnProperty('PartLatexPrefix'))
+							{
+								tmpPart.LaTeX_Content += tmpPart.PartLatexPrefix;
+							}
 							tmpPart.Markdown_Content += tmpContentSet[i].Content;
 							tmpPart.LaTeX_Content = this.getLaTeXFromMarkdown(tmpPart.Markdown_Content);
 						}
@@ -341,6 +345,11 @@ class DocumentationCompile extends libPict.ServiceProviderBase
 				// Now enumerate the groups, create the parts and fill out the tables.
 				for (let i = 0; i < tmpTableGroups.length; i++)
 				{
+					if (tmpPart.hasOwnProperty('PartLatexPrefix'))
+					{
+						tmpPart.LaTeX_Content += tmpPart.PartLatexPrefix;
+					}
+
 					tmpPart.LaTeX_Content += this.generateLaTexSectionTitle(tmpTableGroups[i]);
 
 					for (let k = 0; k < tmpMeadowTables.length; k++)
@@ -350,6 +359,11 @@ class DocumentationCompile extends libPict.ServiceProviderBase
 							this.fable.AppData.documentDefinition.MeadowEntityCategories[tmpTableName].Group == tmpTableGroups[i])
 						{
 							this.log.info(`compiling LaTeX for [${tmpTableName}] in category [${tmpTableGroups[i]}]...`);
+							if ((k > 0) && (tmpPart.hasOwnProperty('TableLatexConnector')))
+							{
+								tmpPart.LaTeX_Content += tmpPart.TableLatexConnector;
+							}
+
 							tmpPart.LaTeX_Content += this.generateLaTeXFromSchema(this.fable.AppData.meadowSchema.Tables[tmpTableName]);
 						};
 					}

@@ -26,6 +26,7 @@ let _Pict = new libCLIProgram(
 
 		// Gulp build execution (for multiple build targets)
 		require('./commands/Quackage-Command-Build.js'),
+		require('./commands/Quackage-Command-CopyFilesFromTo.js'),
 
 		// Build documentation from a folder, with configuration magic if you want
 		require('./commands/Quackage-Command-BuildDocumentation.js'),
