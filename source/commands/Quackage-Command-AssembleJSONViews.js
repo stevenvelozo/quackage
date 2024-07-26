@@ -3,20 +3,20 @@ const libCommandLineCommand = require('pict-service-commandlineutility').Service
 const libFS = require('fs');
 const libPath = require('path');
 
-class QuackageCommandBuildTemplates extends libCommandLineCommand
+class QuackageCommandAssembleJsonViews extends libCommandLineCommand
 {
 	constructor(pFable, pManifest, pServiceHash)
 	{
 		super(pFable, pManifest, pServiceHash);
 
-		this.options.CommandKeyword = 'generate_json_views';
-		this.options.Description = 'Generate PICT JSON View Configurations';
+		this.options.CommandKeyword = 'assemble_json_views';
+		this.options.Description = 'Assemble PICT JSON View Configurations';
 
-		this.options.CommandArguments.push({ Name: '<folder>', Description: 'The folder path to build views in.' });
+		this.options.CommandArguments.push({ Name: '<folder>', Description: 'The folder path to build views from.' });
 
 		this.options.CommandOptions.push({ Name: '-p, --prefix [prefix]', Description: 'A "prefix" for the view set identifiers', Default: 'Default' });
 
-		this.options.Aliases.push('gjv');
+		this.options.Aliases.push('ajv');
 
 		this.viewSets = {};
 
@@ -162,4 +162,4 @@ class QuackageCommandBuildTemplates extends libCommandLineCommand
 	};
 }
 
-module.exports = QuackageCommandBuildTemplates;
+module.exports = QuackageCommandAssembleJsonViews;

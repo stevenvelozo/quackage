@@ -32,8 +32,10 @@ let _Pict = new libCLIProgram(
 		require('./commands/Quackage-Command-BuildDocumentation.js'),
 
 		// Template handling
+		require('./commands/Quackage-Command-AssembleJSONViews.js'),
+
+		// Boilerplate file management
 		require('./commands/Quackage-Command-Boilerplate.js'),
-		require('./commands/Quackage-Command-BuildJSONViews.js'),
 		require('./commands/Quackage-Command-ListTemplates.js'),
 		require('./commands/Quackage-Command-BuildTemplates.js')
 	]);

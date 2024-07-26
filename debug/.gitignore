@@ -1,3 +1,6 @@
+# Test-specific ignores
+PictoView-View-Templates.json
+
 # Quackage manager
 .browserslistrc-BACKUP
 .gulpfile-quackage-config.json
