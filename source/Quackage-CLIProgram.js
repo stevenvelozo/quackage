@@ -3,10 +3,10 @@ const libCLIProgram = require('pict-service-commandlineutility');
 let _Pict = new libCLIProgram(
 	{
 		Product: 'Quackage',
-		Version: '0.0.1',
+		Version: require('../package.json').version,
 
-		Command: 'hl-record-downloader',
-		Description: 'Download an array of records from Headlight.',
+		Command: 'quackage',
+		Description: 'Extensions for managing package.json and make build processes consistent.',
 
 		DefaultProgramConfiguration: require('./Default-Quackage-Configuration.json'),
 

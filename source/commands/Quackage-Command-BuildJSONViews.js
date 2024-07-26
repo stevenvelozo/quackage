@@ -1,4 +1,5 @@
 const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
+
 const libFS = require('fs');
 const libPath = require('path');
 
@@ -9,7 +10,7 @@ class QuackageCommandBuildTemplates extends libCommandLineCommand
 		super(pFable, pManifest, pServiceHash);
 
 		this.options.CommandKeyword = 'generate_json_views';
-		this.options.Description = 'Generate pict ';
+		this.options.Description = 'Generate PICT JSON View Configurations';
 
 		this.options.CommandArguments.push({ Name: '<folder>', Description: 'The folder path to build views in.' });
 
