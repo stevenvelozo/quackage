@@ -63,7 +63,20 @@
 
 // ---> Now load the config and get on with building <--- \\
 console.log(`[ Quackage-Gulpfile.js ] ---> Loading the gulp config...`);
-const _CONFIG = require(`${process.cwd()}/.gulpfile-quackage-config.json`);
+let _CONFIG = require(`${process.cwd()}/.gulpfile-quackage-config.json`);
+
+const libFS= require('fs');
+let _CONFIG_OVERRIDES = {};
+console.log(`override file: ${process.cwd()}/gulpfile-quackage-config-overrides.json`)
+if (libFS.existsSync(`${process.cwd()}/gulpfile-quackage-config-overrides.json`))
+{
+	console.log("Found overrides");
+	_CONFIG_OVERRIDES = require(`${process.cwd()}/gulpfile-quackage-config-overrides.json`);
+	_CONFIG = {..._CONFIG, ..._CONFIG_OVERRIDES};
+	console.log('CONFIG IS NOW:');
+	console.log(_CONFIG);
+}
+
 console.log(`   > Building to [${_CONFIG.LibraryUniminifiedFileName}] and [${_CONFIG.LibraryMinifiedFileName}]`)
 
 // --->  Boilerplate Browser Uglification and Packaging  <--- \\
@@ -78,6 +91,9 @@ const libVinylBuffer = require('vinyl-buffer');
 const libSourcemaps = require('gulp-sourcemaps');
 const libBabel = require('gulp-babel');
 const libTerser = require('gulp-terser');
+
+const libWatchify = require('watchify');
+const childProcess = require('child_process');
 
 // Build the module for the browser
 libGulp.task('minified',
@@ -134,3 +150,114 @@ libGulp.task
 	'default',
 	libGulp.series('debug', 'minified')
 );
+
+libGulp.task
+(
+	'watch',
+	() => {
+		const customOptions = {
+			entries: _CONFIG.EntrypointInputSourceFile,
+			standalone: _CONFIG.LibraryObjectName,
+			debug: true,
+			cache: {},
+			packageCache: {}
+		}
+		const options = Object.assign({}, libWatchify.args, customOptions);
+		console.log("BROWSERIFY OPTIONS FOR WATCH ARE: ");
+		console.log(options);
+		const browserify = libWatchify(libBrowserify(options), { poll: true });
+		browserify.on('update', () => {
+			browserify.bundle()
+				.pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
+				.pipe(libVinylBuffer())
+				.pipe(libSourcemaps.init({loadMaps: true}))
+				.pipe(libBabel()).on('error', console.log)
+				.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+
+			browserify.bundle()
+				.pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
+				.pipe(libVinylBuffer())
+				.pipe(libSourcemaps.init({loadMaps: true}))
+				.pipe(libBabel())
+				.pipe(libTerser()).on('error', console.log)
+				.pipe(libSourcemaps.write('./'))
+				.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+
+			if (_CONFIG.WatchSettings.RunCopyCommandAfterWatch) {
+				runQuackCopyCommand(() => {
+					if (_CONFIG.WatchSettings.RunServeCommandAfterWatch) {
+						runQuackServeCommand(() => {});
+					}
+				})
+			}
+		});
+		browserify.on('log', console.log);
+		browserify.on('error', console.error);
+
+		browserify.bundle()
+			.pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
+			.pipe(libVinylBuffer())
+			.pipe(libSourcemaps.init({loadMaps: true}))
+			// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
+			//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
+			.pipe(libBabel()).on('error', console.log)
+			.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+
+		browserify.bundle()
+			.pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
+			.pipe(libVinylBuffer())
+			.pipe(libSourcemaps.init({loadMaps: true}))
+			// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
+			//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
+			.pipe(libBabel())
+			.pipe(libTerser()).on('error', console.log)
+			.pipe(libSourcemaps.write('./'))
+			.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+
+		if (_CONFIG.WatchSettings.RunCopyCommandAfterWatch) {
+			runQuackCopyCommand(() => {
+				if (_CONFIG.WatchSettings.RunServeCommandAfterWatch) {
+					runQuackServeCommand(() => {});
+				}
+			})
+		}
+	}
+)
+
+function runQuackCopyCommand(callback) {
+	childProcess.exec(`npx quack copy`, (error, stdout, stderr) => {
+		if (error) {
+			console.error(`exec error: ${error}`);
+			return;
+		}
+		if (stdout) {
+			console.log(`${stdout}`);
+		}
+		if (stderr) {
+			console.error(`stderr: ${stderr}`);
+		}
+
+		if (callback) {
+			callback();
+		}
+	});
+}
+
+function runQuackServeCommand(callback) {
+	childProcess.exec(`npx quack serve`, (error, stdout, stderr) => {
+		if (error) {
+			console.error(`exec error: ${error}`);
+			return;
+		}
+		if (stdout) {
+			console.log(`${stdout}`);
+		}
+		if (stderr) {
+			console.error(`stderr: ${stderr}`);
+		}
+
+		if (callback) {
+			callback();
+		}
+	});
+}

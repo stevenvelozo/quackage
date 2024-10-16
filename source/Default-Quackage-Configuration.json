@@ -5,7 +5,11 @@
 		"LibraryObjectName": "{~PascalCaseIdentifier:AppData.Package.name~}",
 		"LibraryOutputFolder": "{~Data:AppData.CWD~}/dist/",
 		"LibraryUniminifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}js",
-		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js"
+		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js",
+		"WatchSettings": {
+			"RunCopyCommandAfterWatch": true,
+			"RunServeCommandAfterWatch": true
+		}
 	},
 	"DefaultBabelRC": {
 		"presets": [
