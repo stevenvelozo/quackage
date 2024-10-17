@@ -61,9 +61,11 @@
 
  */
 
+console.log('Config file location: ', process.env.ConfigFile);
+
 // ---> Now load the config and get on with building <--- \\
 console.log(`[ Quackage-Gulpfile.js ] ---> Loading the gulp config...`);
-let _CONFIG = require(`${process.cwd()}/.gulpfile-quackage-config.json`);
+let _CONFIG = require(`${process.env.ConfigFile}`);
 
 const libFS= require('fs');
 let _CONFIG_OVERRIDES = {};
@@ -183,13 +185,13 @@ libGulp.task
 				.pipe(libSourcemaps.write('./'))
 				.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
 
-			if (_CONFIG.WatchSettings.RunCopyCommandAfterWatch) {
-				runQuackCopyCommand(() => {
-					if (_CONFIG.WatchSettings.RunServeCommandAfterWatch) {
-						runQuackServeCommand(() => {});
-					}
-				})
-			}
+			// if (_CONFIG.WatchSettings.RunCopyCommandAfterWatch) {
+			// 	runQuackCopyCommand(() => {
+			// 		if (_CONFIG.WatchSettings.RunServeCommandAfterWatch) {
+			// 			runQuackServeCommand(() => {});
+			// 		}
+			// 	})
+			// }
 		});
 		browserify.on('log', console.log);
 		browserify.on('error', console.error);
@@ -198,8 +200,6 @@ libGulp.task
 			.pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
 			.pipe(libVinylBuffer())
 			.pipe(libSourcemaps.init({loadMaps: true}))
-			// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
-			//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
 			.pipe(libBabel()).on('error', console.log)
 			.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
 
@@ -207,20 +207,18 @@ libGulp.task
 			.pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
 			.pipe(libVinylBuffer())
 			.pipe(libSourcemaps.init({loadMaps: true}))
-			// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
-			//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
 			.pipe(libBabel())
 			.pipe(libTerser()).on('error', console.log)
 			.pipe(libSourcemaps.write('./'))
 			.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
 
-		if (_CONFIG.WatchSettings.RunCopyCommandAfterWatch) {
-			runQuackCopyCommand(() => {
-				if (_CONFIG.WatchSettings.RunServeCommandAfterWatch) {
-					runQuackServeCommand(() => {});
-				}
-			})
-		}
+		// if (_CONFIG.WatchSettings.RunCopyCommandAfterWatch) {
+		// 	runQuackCopyCommand(() => {
+		// 		if (_CONFIG.WatchSettings.RunServeCommandAfterWatch) {
+		// 			runQuackServeCommand(() => {});
+		// 		}
+		// 	})
+		// }
 	}
 )
 

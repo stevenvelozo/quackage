@@ -1,6 +1,7 @@
 const libCommandLineCommand = require('pict-service-commandlineutility').ServiceCommandLineCommand;
 const libFS = require('fs');
 const { spawn } = require('node:child_process');
+const {exec} = require("child_process");
 
 class QuackageCommandWatch extends libCommandLineCommand
 {
@@ -69,7 +70,7 @@ class QuackageCommandWatch extends libCommandLineCommand
                 }
 
                 // ## .gulpfile-quackage-config.json
-                libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage-config.json`, this.fable.parseTemplateByHash('Gulpfile-Configuration', pAction));
+                libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage-config-${pAction.Hash}.json`, this.fable.parseTemplateByHash('Gulpfile-Configuration', pAction));
                 // ## .gulpfile-quackage.js
                 libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
                 // ## gulpfile.js
@@ -102,8 +103,12 @@ class QuackageCommandWatch extends libCommandLineCommand
                 }
                 this.log.info(`Quackage found gulp at [${tmpGulpLocation}] ... executing build from there.`);
 
+                let executionEnvironment = {...process.env};
+                executionEnvironment['ConfigFile'] = `${this.fable.AppData.CWD}/.gulpfile-quackage-config-${pAction.Hash}.json`
+
                 //this.fable.QuackageProcess.execute(`${tmpGulpLocation}`, [`--gulpfile`, `${this.fable.AppData.CWD}/.gulpfile-quackage.js`, `watch`], { cwd: this.fable.AppData.CWD }, fActionCallback);
-                const buildProcess = spawn(`${tmpGulpLocation}`, [`--gulpfile`, `${this.fable.AppData.CWD}/.gulpfile-quackage.js`, `watch`], { cwd: this.fable.AppData.CWD });
+                const buildProcess = spawn(`${tmpGulpLocation}`, [`--gulpfile`, `${this.fable.AppData.CWD}/.gulpfile-quackage.js`, `watch`],
+                    { cwd: this.fable.AppData.CWD, env: executionEnvironment });
 
                 buildProcess.stdout.on('data', (data) => {
                     this.log.info(`${pAction.Hash}: ${data}`);
@@ -121,6 +126,26 @@ class QuackageCommandWatch extends libCommandLineCommand
             {
                 return fCallback(pError);
             });
+
+
+        console.log(`looking for reload file at: ${this.pict.AppData.QuackageFolder}`);
+        if (libFS.existsSync(`${this.pict.AppData.QuackageFolder}/reloadOtherFiles.js`)) {
+            this.log.info('found hotreload script');
+            const buildProcess = spawn(`node`, [`${this.pict.AppData.QuackageFolder}/reloadOtherFiles.js`],
+                { cwd: this.fable.AppData.CWD });
+
+            buildProcess.stdout.on('data', (data) => {
+                this.log.info(`reload watcher: ${data}`);
+            });
+
+            buildProcess.stderr.on('data', (data) => {
+                console.error(`Error: ${data}`);
+            });
+
+            buildProcess.on('close', (code) => {
+                console.log(`child process exited with code ${code}`);
+            });
+        }
     };
 }
 
