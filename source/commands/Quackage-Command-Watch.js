@@ -53,8 +53,8 @@ class QuackageCommandWatchOld extends libCommandLineCommand
         });
 
         tmpActionSet.forEach(action => {
-            this.checkBrowserListRC(action);
-            this.checkBabel();
+            this.setupBabel();
+            const browsersListSettings = action.BrowsersListRC;
             let tmpGulpLocation = this.setupGulp(action);
             let buildConfig = JSON.parse(this.fable.parseTemplateByHash('Gulpfile-Configuration', action));
 
@@ -64,10 +64,9 @@ class QuackageCommandWatchOld extends libCommandLineCommand
                 const _CONFIG_OVERRIDES = require(`${process.cwd()}/gulpfile-quackage-config-overrides.json`);
                 buildConfig = {...buildConfig, ..._CONFIG_OVERRIDES};
             }
-            console.log('Build Config ', buildConfig);
-            console.log('Build Config ', typeof(buildConfig));
             let executionEnvironment = {...process.env};
             executionEnvironment['QuackageBuildConfig'] = JSON.stringify(buildConfig);
+            executionEnvironment['BROWSERSLIST'] = browsersListSettings;
             this.fable.QuackageProcess.execute(`${tmpGulpLocation}`, [`--gulpfile`, `${this.fable.AppData.CWD}/.gulpfile-quackage.js`, `watch`],
                 { cwd: this.fable.AppData.CWD, env: executionEnvironment }, () => { this.log.info('Completed execution'); });
         });
@@ -86,22 +85,7 @@ class QuackageCommandWatchOld extends libCommandLineCommand
         });
     }
 
-    checkBrowserListRC(pAction) {
-        if (pAction.hasOwnProperty('BrowsersListRC'))
-        {
-            // ## Backup the .browserslistrc file if it existst
-            if (libFS.existsSync(`${this.fable.AppData.CWD}/.browserslistrc`))
-            {
-                libFS.copyFileSync(`${this.fable.AppData.CWD}/.browserslistrc`, `${this.fable.AppData.CWD}/.browserslistrc-BACKUP`);
-                this.log.info(`Contents of existing .browserslistrc backed up to .browserslistrc-BACKUP and output below:`, { FileContents: libFS.readFileSync(`${this.fable.AppData.CWD}/.browserslistrc`).toString() });
-            }
-
-            // ## Write out the browserslistrc
-            libFS.writeFileSync(`${this.fable.AppData.CWD}/.browserslistrc`, pAction.BrowsersListRC);
-        }
-    }
-
-    checkBabel() {
+    setupBabel() {
         if (this.pict.ProgramConfiguration.DefaultBabelRC)
         {
             if (libFS.existsSync(`${this.fable.AppData.CWD}/.babelrc`))

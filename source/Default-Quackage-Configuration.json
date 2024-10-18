@@ -15,7 +15,12 @@
 	},
 	"DefaultBabelRC": {
 		"presets": [
-			"@babel/preset-env"
+			[
+				"@babel/preset-env",
+				{
+					"debug": true
+				}
+			]
 		]
 	},
 	"GulpExecutions": [

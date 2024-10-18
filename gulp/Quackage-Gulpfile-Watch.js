@@ -2,15 +2,10 @@
 
 console.log(`[ Quackage-Gulpfile.js ] ---> Loading the gulp config...`);
 let _CONFIG = JSON.parse(process.env.QuackageBuildConfig);
-
-Object.keys(_CONFIG).forEach(function (key) { console.log(key); });
-console.log('Unminified file: ', _CONFIG['LibraryUniminifiedFileName']);
-
-console.log(`   > Building to [${_CONFIG.LibraryUniminifiedFileName}] and [${_CONFIG.LibraryMinifiedFileName}]`)
-
-// --->  Boilerplate Browser Uglification and Packaging  <--- \\
+//process.env['BABEL_SHOW_CONFIG_FOR'] = `${_CONFIG.EntrypointInputSourceFile} npm start`;
+console.log(`   > Building to [${_CONFIG.LibraryUniminifiedFileName}] and [${_CONFIG.LibraryMinifiedFileName}]`);
 console.log(`--> Gulp is taking over!`);
-
+console.log('BROWSERSLIST: ', process.env['BROWSERSLIST']);
 const libBrowserify = require('browserify');
 const libGulp = require('gulp');
 
@@ -36,40 +31,37 @@ libGulp.task
         }
         const options = Object.assign({}, libWatchify.args, customOptions);
         const browserify = libWatchify(libBrowserify(options), { poll: true });
-        browserify.on('update', () => {
-            browserify.bundle()
-                .pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
-                .pipe(libVinylBuffer())
-                .pipe(libSourcemaps.init({loadMaps: true}))
-                .pipe(libBabel()).on('error', console.log)
-                .pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+        const babelOptions = { 'targets': process.env['BROWSERSLIST']};
 
-            browserify.bundle()
-                .pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
-                .pipe(libVinylBuffer())
-                .pipe(libSourcemaps.init({loadMaps: true}))
-                .pipe(libBabel())
-                .pipe(libTerser()).on('error', console.log)
-                .pipe(libSourcemaps.write('./'))
-                .pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+        browserify.on('update', () => {
+            buildUnminified(browserify, babelOptions);
+            buildMinified(browserify, babelOptions);
         });
+
         browserify.on('log', console.log);
         browserify.on('error', console.error);
 
-        browserify.bundle()
-            .pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
-            .pipe(libVinylBuffer())
-            .pipe(libSourcemaps.init({loadMaps: true}))
-            .pipe(libBabel()).on('error', console.log)
-            .pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
-
-        browserify.bundle()
-            .pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
-            .pipe(libVinylBuffer())
-            .pipe(libSourcemaps.init({loadMaps: true}))
-            .pipe(libBabel())
-            .pipe(libTerser()).on('error', console.log)
-            .pipe(libSourcemaps.write('./'))
-            .pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+        buildUnminified(browserify, babelOptions);
+        buildMinified(browserify, babelOptions);
     }
 )
+
+function buildUnminified(browserify, babelOptions) {
+    browserify.bundle()
+        .pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
+        .pipe(libVinylBuffer())
+        .pipe(libSourcemaps.init({loadMaps: true}))
+        .pipe(libBabel(babelOptions)).on('error', console.log)
+        .pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+}
+
+function buildMinified(browserify, babelOptions) {
+    browserify.bundle()
+        .pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
+        .pipe(libVinylBuffer())
+        .pipe(libSourcemaps.init({loadMaps: true}))
+        .pipe(libBabel(babelOptions))
+        .pipe(libTerser()).on('error', console.log)
+        .pipe(libSourcemaps.write('./'))
+        .pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+}
