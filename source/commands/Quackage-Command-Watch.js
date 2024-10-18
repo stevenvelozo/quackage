@@ -2,6 +2,7 @@ const libCommandLineCommand = require('pict-service-commandlineutility').Service
 const libFS = require('fs');
 const { spawn } = require('node:child_process');
 const {exec} = require("child_process");
+const {watch} = require("fs");
 
 class QuackageCommandWatchOld extends libCommandLineCommand
 {
@@ -11,6 +12,7 @@ class QuackageCommandWatchOld extends libCommandLineCommand
 
         this.logDesignation = 'Quackage Watcher';
         this.reloadCommand = '';
+        this.configOverrides;
         this.options.CommandKeyword = 'watch';
         this.options.Description = 'Build your npm module into a dist folder and watch for changes to automatically rebuild';
 
@@ -20,13 +22,26 @@ class QuackageCommandWatchOld extends libCommandLineCommand
 
     onRunAsync(fCallback)
     {
-        this.log.info(`${this.logDesignation} Running quackage watcher...`);
+        this.log.info(`[${this.logDesignation}] Running quackage watcher...`);
         this.fable.TemplateProvider.addTemplate('Gulpfile-Configuration', JSON.stringify(this.pict.ProgramConfiguration.GulpfileConfiguration, null, 4));
         this.fable.TemplateProvider.addTemplate('Gulpfile-QuackageBase', this.pict.ProgramConfiguration.QuackageBaseGulpfile);
 
+        let watchSettings = this.pict.ProgramConfiguration.WatchSettings
         let tmpActionSet = [];
-        const directories = this.pict.ProgramConfiguration.WatchSettings.MonitorFolders;
-        this.reloadCommand = this.pict.ProgramConfiguration.WatchSettings.OnFilesChangedCommand;
+
+        this.log.info(`Checking for override config at ${process.cwd()}/gulpfile-quackage-config-overrides.json`);
+        if (libFS.existsSync(`${process.cwd()}/gulpfile-quackage-config-overrides.json`))
+        {
+            console.log("Found overrides");
+            this.configOverrides = require(`${process.cwd()}/gulpfile-quackage-config-overrides.json`);
+            watchSettings = {...watchSettings, ...this.configOverrides.WatchSettings};
+        }
+        this.log.info(`Config settings are: ${JSON.stringify(watchSettings)}`);
+
+
+
+        const directories = watchSettings.MonitorFolders;
+        this.reloadCommand = watchSettings.OnFilesChangedCommand;
 
         // ##. Figure out which actions to execute
         for (let i = 0; i < this.pict.ProgramConfiguration.GulpExecutions.length; i++)
@@ -56,14 +71,7 @@ class QuackageCommandWatchOld extends libCommandLineCommand
             this.setupBabel();
             const browsersListSettings = action.BrowsersListRC;
             let tmpGulpLocation = this.setupGulp(action);
-            let buildConfig = JSON.parse(this.fable.parseTemplateByHash('Gulpfile-Configuration', action));
-
-            if (libFS.existsSync(`${process.cwd()}/gulpfile-quackage-config-overrides.json`))
-            {
-                console.log("Found overrides");
-                const _CONFIG_OVERRIDES = require(`${process.cwd()}/gulpfile-quackage-config-overrides.json`);
-                buildConfig = {...buildConfig, ..._CONFIG_OVERRIDES};
-            }
+            let buildConfig = {...JSON.parse(this.fable.parseTemplateByHash('Gulpfile-Configuration', action), this.configOverrides?.GulpfileConfiguration)};
             let executionEnvironment = {...process.env};
             executionEnvironment['QuackageBuildConfig'] = JSON.stringify(buildConfig);
             executionEnvironment['BROWSERSLIST'] = browsersListSettings;

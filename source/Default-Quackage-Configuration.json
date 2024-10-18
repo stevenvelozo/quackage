@@ -8,19 +8,12 @@
 		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js"
 	},
 	"WatchSettings": {
-		"RunCopyCommandAfterWatch": true,
-		"RunServeCommandAfterWatch": true,
 		"MonitorFolders": ["./html", "./css", "./assets"],
 		"OnFilesChangedCommand": "npx quack copy"
 	},
 	"DefaultBabelRC": {
 		"presets": [
-			[
-				"@babel/preset-env",
-				{
-					"debug": true
-				}
-			]
+			"@babel/preset-env"
 		]
 	},
 	"GulpExecutions": [
