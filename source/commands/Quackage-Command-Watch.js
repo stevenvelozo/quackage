@@ -3,12 +3,14 @@ const libFS = require('fs');
 const { spawn } = require('node:child_process');
 const {exec} = require("child_process");
 
-class QuackageCommandWatch extends libCommandLineCommand
+class QuackageCommandWatchOld extends libCommandLineCommand
 {
     constructor(pFable, pManifest, pServiceHash)
     {
         super(pFable, pManifest, pServiceHash);
 
+        this.logDesignation = 'Quackage Watcher';
+        this.reloadCommand = '';
         this.options.CommandKeyword = 'watch';
         this.options.Description = 'Build your npm module into a dist folder and watch for changes to automatically rebuild';
 
@@ -18,12 +20,13 @@ class QuackageCommandWatch extends libCommandLineCommand
 
     onRunAsync(fCallback)
     {
+        this.log.info(`${this.logDesignation} Running quackage watcher...`);
         this.fable.TemplateProvider.addTemplate('Gulpfile-Configuration', JSON.stringify(this.pict.ProgramConfiguration.GulpfileConfiguration, null, 4));
         this.fable.TemplateProvider.addTemplate('Gulpfile-QuackageBase', this.pict.ProgramConfiguration.QuackageBaseGulpfile);
 
         let tmpActionSet = [];
-
-        this.log.info(`Building browserified and minified versions of your module ...`);
+        const directories = this.pict.ProgramConfiguration.WatchSettings.MonitorFolders;
+        this.reloadCommand = this.pict.ProgramConfiguration.WatchSettings.OnFilesChangedCommand;
 
         // ##. Figure out which actions to execute
         for (let i = 0; i < this.pict.ProgramConfiguration.GulpExecutions.length; i++)
@@ -37,116 +40,112 @@ class QuackageCommandWatch extends libCommandLineCommand
             return false;
         }
 
-        // ##. Enumerate the actions, executing each one, in series asynchronously
-        tmpActionSet.forEach((pAction) =>
+        directories.forEach((dir) => {
+            try {
+                if (!libFS.existsSync(dir)) {
+                    libFS.mkdirSync(dir);
+                }
+                libFS.watch(dir,{ recursive: true },  (event, filename) => this.reload(event, filename));
+            }
+            catch (exception) {
+                this.log.error(`[${this.logDesignation}]: Error watching ${dir} `, exception.message);
+            }
+        });
+
+        tmpActionSet.forEach(action => {
+            this.checkBrowserListRC(action);
+            this.checkBabel();
+            let tmpGulpLocation = this.setupGulp(action);
+            let buildConfig = JSON.parse(this.fable.parseTemplateByHash('Gulpfile-Configuration', action));
+
+            if (libFS.existsSync(`${process.cwd()}/gulpfile-quackage-config-overrides.json`))
             {
-                this.log.info(`###############################[ BUILDING ${pAction.Name} ]###############################`);
-
-                // ## .browserslistrc
-                if (pAction.hasOwnProperty('BrowsersListRC'))
-                {
-                    // ## Backup the .browserslistrc file if it existst
-                    if (libFS.existsSync(`${this.fable.AppData.CWD}/.browserslistrc`))
-                    {
-                        libFS.copyFileSync(`${this.fable.AppData.CWD}/.browserslistrc`, `${this.fable.AppData.CWD}/.browserslistrc-BACKUP`);
-                        this.log.info(`Contents of existing .browserslistrc backed up to .browserslistrc-BACKUP and output below:`, { FileContents: libFS.readFileSync(`${this.fable.AppData.CWD}/.browserslistrc`).toString() });
-                    }
-
-                    // ## Write out the browserslistrc
-                    libFS.writeFileSync(`${this.fable.AppData.CWD}/.browserslistrc`, pAction.BrowsersListRC);
-                }
-
-                // ## .babelrc
-                if (this.pict.ProgramConfiguration.DefaultBabelRC)
-                {
-                    if (libFS.existsSync(`${this.fable.AppData.CWD}/.babelrc`))
-                    {
-                        this.log.info(`Leaving the existing .babelrc file in place.  Please make sure it is compatible with the build you are trying to make.`);
-                    }
-                    else
-                    {
-                        libFS.writeFileSync(`${this.fable.AppData.CWD}/.babelrc`, JSON.stringify(this.pict.ProgramConfiguration.DefaultBabelRC, null, 4));
-                    }
-                }
-
-                // ## .gulpfile-quackage-config.json
-                libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage-config-${pAction.Hash}.json`, this.fable.parseTemplateByHash('Gulpfile-Configuration', pAction));
-                // ## .gulpfile-quackage.js
-                libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
-                // ## gulpfile.js
-                //libFS.writeFileSync(`${this.fable.AppData.CWD}/gulpfile.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
-
-                // Now execute the gulpfile using our custom service provider!
-                // We are forcing the gulp to run from the node_modules folder of the package -- this allows you to run quackage globally or from the root of a monorepo
-                let tmpCWDGulpLocation = `${this.fable.AppData.CWD}/node_modules/.bin/gulp`;
-                let tmpRelativePackageGulpLocation = `${__dirname}/../../../.bin/gulp`;
-                let tmpGitRepositoryGulpLocation = `${__dirname}/../../node_modules/.bin/gulp`;
-                let tmpGulpLocation = tmpCWDGulpLocation;
-                // Check that gulp exists here
-                if (!libFS.existsSync(tmpGulpLocation))
-                {
-                    this.log.info(`CWD Location does not contain an installation of gulp at [${tmpCWDGulpLocation}]; checking relative to the quackage package...`);
-                    // Try the folder relative to quackage (wherever this packages' node modules are)
-                    tmpGulpLocation = tmpRelativePackageGulpLocation;
-                }
-                if (!libFS.existsSync(tmpGulpLocation))
-                {
-                    this.log.info(`Relative Quackage Package Location does not contain an installation of gulp at [${tmpRelativePackageGulpLocation}]; checking if you're running from the direct git repository...`);
-                    // Try the folder relative to quackage (wherever this packages' node modules are)
-                    tmpGulpLocation = tmpGitRepositoryGulpLocation;
-                }
-                if (!libFS.existsSync(tmpGulpLocation))
-                {
-                    let tmpErrorMessage = `Not even the git checkout location has an installation of gulp at [${tmpGulpLocation}]... building cannot commence.  We also tried CWD [${tmpCWDGulpLocation}] and relative node_modules [${tmpRelativePackageGulpLocation}].  Sorry!  Maybe you need to run "npm install" somewhere??`;
-                    this.log.info(tmpErrorMessage)
-                    return new Error(tmpErrorMessage);
-                }
-                this.log.info(`Quackage found gulp at [${tmpGulpLocation}] ... executing build from there.`);
-
-                let executionEnvironment = {...process.env};
-                executionEnvironment['ConfigFile'] = `${this.fable.AppData.CWD}/.gulpfile-quackage-config-${pAction.Hash}.json`
-
-                //this.fable.QuackageProcess.execute(`${tmpGulpLocation}`, [`--gulpfile`, `${this.fable.AppData.CWD}/.gulpfile-quackage.js`, `watch`], { cwd: this.fable.AppData.CWD }, fActionCallback);
-                const buildProcess = spawn(`${tmpGulpLocation}`, [`--gulpfile`, `${this.fable.AppData.CWD}/.gulpfile-quackage.js`, `watch`],
-                    { cwd: this.fable.AppData.CWD, env: executionEnvironment });
-
-                buildProcess.stdout.on('data', (data) => {
-                    this.log.info(`${pAction.Hash}: ${data}`);
-                });
-
-                buildProcess.stderr.on('data', (data) => {
-                    console.error(`Error: ${data}`);
-                });
-
-                buildProcess.on('close', (code) => {
-                    console.log(`child process exited with code ${code}`);
-                });
-            },
-            (pError) =>
-            {
-                return fCallback(pError);
-            });
-
-
-        console.log(`looking for reload file at: ${this.pict.AppData.QuackageFolder}`);
-        if (libFS.existsSync(`${this.pict.AppData.QuackageFolder}/reloadOtherFiles.js`)) {
-            this.log.info('found hotreload script');
-            const buildProcess = spawn(`node`, [`${this.pict.AppData.QuackageFolder}/reloadOtherFiles.js`],
-                { cwd: this.fable.AppData.CWD });
-
-            buildProcess.stdout.on('data', (data) => {
-                this.log.info(`reload watcher: ${data}`);
-            });
-
-            buildProcess.stderr.on('data', (data) => {
-                console.error(`Error: ${data}`);
-            });
-
-            buildProcess.on('close', (code) => {
-                console.log(`child process exited with code ${code}`);
-            });
-        }
+                console.log("Found overrides");
+                const _CONFIG_OVERRIDES = require(`${process.cwd()}/gulpfile-quackage-config-overrides.json`);
+                buildConfig = {...buildConfig, ..._CONFIG_OVERRIDES};
+            }
+            console.log('Build Config ', buildConfig);
+            console.log('Build Config ', typeof(buildConfig));
+            let executionEnvironment = {...process.env};
+            executionEnvironment['QuackageBuildConfig'] = JSON.stringify(buildConfig);
+            this.fable.QuackageProcess.execute(`${tmpGulpLocation}`, [`--gulpfile`, `${this.fable.AppData.CWD}/.gulpfile-quackage.js`, `watch`],
+                { cwd: this.fable.AppData.CWD, env: executionEnvironment }, () => { this.log.info('Completed execution'); });
+        });
     };
+
+    reload(event, filename) {
+        this.log.info(`[${this.logDesignation}]: File change detected in `, filename);
+        exec(this.reloadCommand, (err, stdout, stderr) => {
+            if (err) {
+                this.log.error(`[${this.logDesignation}]: `);
+                this.log.error(`[${this.logDesignation}]: Error:`);
+                this.log.error(`[${this.logDesignation}]: ` + err);
+                this.log.error(`[${this.logDesignation}]: `);
+            }
+            this.log.info(`[${this.logDesignation}]: Files rebuilt`);
+        });
+    }
+
+    checkBrowserListRC(pAction) {
+        if (pAction.hasOwnProperty('BrowsersListRC'))
+        {
+            // ## Backup the .browserslistrc file if it existst
+            if (libFS.existsSync(`${this.fable.AppData.CWD}/.browserslistrc`))
+            {
+                libFS.copyFileSync(`${this.fable.AppData.CWD}/.browserslistrc`, `${this.fable.AppData.CWD}/.browserslistrc-BACKUP`);
+                this.log.info(`Contents of existing .browserslistrc backed up to .browserslistrc-BACKUP and output below:`, { FileContents: libFS.readFileSync(`${this.fable.AppData.CWD}/.browserslistrc`).toString() });
+            }
+
+            // ## Write out the browserslistrc
+            libFS.writeFileSync(`${this.fable.AppData.CWD}/.browserslistrc`, pAction.BrowsersListRC);
+        }
+    }
+
+    checkBabel() {
+        if (this.pict.ProgramConfiguration.DefaultBabelRC)
+        {
+            if (libFS.existsSync(`${this.fable.AppData.CWD}/.babelrc`))
+            {
+                this.log.info(`Leaving the existing .babelrc file in place.  Please make sure it is compatible with the build you are trying to make.`);
+            }
+            else
+            {
+                libFS.writeFileSync(`${this.fable.AppData.CWD}/.babelrc`, JSON.stringify(this.pict.ProgramConfiguration.DefaultBabelRC, null, 4));
+            }
+        }
+    }
+
+    setupGulp(pAction) {
+        // ## .gulpfile-quackage.js
+        libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
+        // Now execute the gulpfile using our custom service provider!
+        // We are forcing the gulp to run from the node_modules folder of the package -- this allows you to run quackage globally or from the root of a monorepo
+        let tmpCWDGulpLocation = `${this.fable.AppData.CWD}/node_modules/.bin/gulp`;
+        let tmpRelativePackageGulpLocation = `${__dirname}/../../../.bin/gulp`;
+        let tmpGitRepositoryGulpLocation = `${__dirname}/../../node_modules/.bin/gulp`;
+        let tmpGulpLocation = tmpCWDGulpLocation;
+        // Check that gulp exists here
+        if (!libFS.existsSync(tmpGulpLocation))
+        {
+            this.log.info(`CWD Location does not contain an installation of gulp at [${tmpCWDGulpLocation}]; checking relative to the quackage package...`);
+            // Try the folder relative to quackage (wherever this packages' node modules are)
+            tmpGulpLocation = tmpRelativePackageGulpLocation;
+        }
+        if (!libFS.existsSync(tmpGulpLocation))
+        {
+            this.log.info(`Relative Quackage Package Location does not contain an installation of gulp at [${tmpRelativePackageGulpLocation}]; checking if you're running from the direct git repository...`);
+            // Try the folder relative to quackage (wherever this packages' node modules are)
+            tmpGulpLocation = tmpGitRepositoryGulpLocation;
+        }
+        if (!libFS.existsSync(tmpGulpLocation))
+        {
+            let tmpErrorMessage = `Not even the git checkout location has an installation of gulp at [${tmpGulpLocation}]... building cannot commence.  We also tried CWD [${tmpCWDGulpLocation}] and relative node_modules [${tmpRelativePackageGulpLocation}].  Sorry!  Maybe you need to run "npm install" somewhere??`;
+            this.log.info(tmpErrorMessage)
+            return false;
+        }
+        this.log.info(`Quackage found gulp at [${tmpGulpLocation}] ... executing build from there.`);
+        return tmpGulpLocation;
+    }
 }
 
-module.exports = QuackageCommandWatch;
+module.exports = QuackageCommandWatchOld;
