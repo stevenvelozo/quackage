@@ -108,6 +108,8 @@ class QuackageCommandWatchOld extends libCommandLineCommand
     }
 
     setupGulp(pAction) {
+        // ## .gulpfile-quackage-config.json
+        libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage-config.json`, this.fable.parseTemplateByHash('Gulpfile-Configuration', pAction));
         // ## .gulpfile-quackage.js
         libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
         // Now execute the gulpfile using our custom service provider!
