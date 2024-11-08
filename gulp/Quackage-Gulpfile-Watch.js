@@ -1,7 +1,11 @@
 'use strict';
 
 console.log(`[ Quackage-Gulpfile.js ] ---> Loading the gulp config...`);
-let _CONFIG = JSON.parse(process.env.QuackageBuildConfig);
+let _CONFIG = require(`${process.cwd()}/.gulpfile-quackage-config.json`);
+if (process.env.QuackageBuildConfig)
+{
+    _CONFIG = JSON.parse(process.env.QuackageBuildConfig);
+}
 //process.env['BABEL_SHOW_CONFIG_FOR'] = `${_CONFIG.EntrypointInputSourceFile} npm start`;
 console.log(`   > Building to [${_CONFIG.LibraryUniminifiedFileName}] and [${_CONFIG.LibraryMinifiedFileName}]`);
 console.log(`--> Gulp is taking over!`);
