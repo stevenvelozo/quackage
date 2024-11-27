@@ -1,6 +1,6 @@
 {
     "name": "quackage",
-    "version": "1.0.34",
+    "version": "1.0.35",
     "description": "Building.  Testing.  Quacking.  Reloading.",
     "main": "source/Quackage-CLIProgram.js",
     "scripts": {
@@ -68,6 +68,7 @@
         "nyc": "^15.1.0",
         "pict-service-commandlineutility": "^1.0.14",
         "vinyl-buffer": "^1.0.1",
-        "vinyl-source-stream": "^2.0.0"
+        "vinyl-source-stream": "^2.0.0",
+        "watchify": "^4.0.0"
     }
 }
