@@ -1,74 +1,73 @@
 {
-  "name": "quackage",
-  "version": "1.0.32",
-  "description": "Building.  Testing.  Quacking.",
-  "main": "source/Quackage.js",
-  "scripts": {
-    "start": "node source/Quackage.js",
-    "coverage": "./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov ./node_modules/mocha/bin/_mocha -- -u tdd -R spec",
-    "test": "./node_modules/.bin/mocha -u tdd -R spec",
-    "buildtemplates": "node ./source/Quackage.js buildtemplates ./templates",
-    "build": "./node_modules/.bin/gulp build"
-  },
-  "bin": {
-    "quack": "./source/Quackage-Run.js",
-    "qua": "./source/Quackage-Run.js"
-  },
-  "mocha": {
-    "diff": true,
-    "extension": [
-      "js"
+    "name": "quackage",
+    "version": "1.0.33",
+    "description": "Building.  Testing.  Quacking.  Reloading.",
+    "main": "source/Quackage-CLIProgram.js",
+    "scripts": {
+        "start": "node source/Quackage-Run.js",
+        "coverage": "npx nyc --reporter=lcov --reporter=text-lcov npx mocha -- -u tdd -R spec",
+        "test": "npx mocha -u tdd -R spec",
+        "build": "./source/Quackage-Run.js buildtemplates ./templates",
+        "tests": "npx mocha -u tdd --exit -R spec --grep"
+    },
+    "bin": {
+        "quack": "./source/Quackage-Run.js",
+        "qua": "./source/Quackage-Run.js"
+    },
+    "mocha": {
+        "diff": true,
+        "extension": [
+            "js"
+        ],
+        "package": "./package.json",
+        "reporter": "spec",
+        "slow": "75",
+        "timeout": "5000",
+        "ui": "tdd",
+        "watch-files": [
+            "source/**/*.js",
+            "test/**/*.js"
+        ],
+        "watch-ignore": [
+            "lib/vendor"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/stevenvelozo/quackage.git"
+    },
+    "browser": {
+        "./source/utility/Quackage-Execute-Process.js": "./source/utility/Quackage-Execute-Process-Base.js"
+    },
+    "keywords": [
+        "templates",
+        "metapackage"
     ],
-    "package": "./package.json",
-    "reporter": "spec",
-    "slow": "75",
-    "timeout": "5000",
-    "ui": "tdd",
-    "watch-files": [
-      "source/**/*.js",
-      "test/**/*.js"
-    ],
-    "watch-ignore": [
-      "lib/vendor"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stevenvelozo/quackage.git"
-  },
-  "browser": {
-    "./source/utility/Quackage-Execute-Process.js": "./source/utility/Quackage-Execute-Process-Base.js"
-  },
-  "keywords": [
-    "templates",
-    "metapackage"
-  ],
-  "author": "Steven Velozo <steven@velozo.com> (http://velozo.com/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/stevenvelozo/quackage/issues"
-  },
-  "homepage": "https://github.com/stevenvelozo/quackage",
-  "dependencies": {
-    "@babel/core": "^7.23.9",
-    "@babel/preset-env": "^7.23.9",
-    "browserify": "^17.0.0",
-    "chai": "4.3.10",
-    "copy-files-from-to": "^3.11.0",
-    "devextreme-showdown": "^1.0.1",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-env": "^0.4.0",
-    "gulp-sourcemaps": "^3.0.0",
-    "gulp-terser": "^2.1.0",
-    "marked": "^13.0.2",
-    "marked-tex-renderer": "^1.1.1",
-    "mocha": "10.4.0",
-    "npm-check-updates": "^16.14.20",
-    "nyc": "^15.1.0",
-    "pict-service-commandlineutility": "^1.0.14",
-    "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0",
-    "watchify": "^4.0.0"
-  }
+    "author": "Steven Velozo <steven@velozo.com> (http://velozo.com/)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/stevenvelozo/quackage/issues"
+    },
+    "homepage": "https://github.com/stevenvelozo/quackage",
+    "dependencies": {
+        "@babel/core": "^7.23.9",
+        "@babel/preset-env": "^7.23.9",
+        "browserify": "^17.0.0",
+        "chai": "4.3.10",
+        "copy-files-from-to": "^3.11.0",
+        "devextreme-showdown": "^1.0.1",
+        "gulp": "^4.0.2",
+        "gulp-babel": "^8.0.0",
+        "gulp-env": "^0.4.0",
+        "gulp-sourcemaps": "^3.0.0",
+        "gulp-terser": "^2.1.0",
+        "marked": "~10.0.0",
+        "marked-tex-renderer": "^1.1.1",
+        "mocha": "10.4.0",
+        "npm-check-updates": "^16.14.20",
+        "nyc": "^15.1.0",
+        "pict-service-commandlineutility": "^1.0.14",
+        "vinyl-buffer": "^1.0.1",
+        "vinyl-source-stream": "^2.0.0"
+    }
 }

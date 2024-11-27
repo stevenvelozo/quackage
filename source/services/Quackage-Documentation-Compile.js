@@ -1,7 +1,7 @@
 const libPict = require('pict');
 
-const libMarked = require('marked');
-const libMarkedTexRenderer = require('marked-tex-renderer');
+//const libMarked = require('marked');
+//const libMarkedTexRenderer = require('marked-tex-renderer');
 
 
 class DocumentationCompile extends libPict.ServiceProviderBase
@@ -19,40 +19,41 @@ class DocumentationCompile extends libPict.ServiceProviderBase
 
 	getLaTeXFromMarkdown(pMarkdown)
 	{
-		let tmpTexRenderer = new libMarkedTexRenderer()
-		tmpTexRenderer.heading = this.latexHeadingSections;
-		tmpTexRenderer.checkbox = (pChecked) => { return ''; };
+		return false;
+// 		let tmpTexRenderer = new libMarkedTexRenderer()
+// 		tmpTexRenderer.heading = this.latexHeadingSections;
+// 		tmpTexRenderer.checkbox = (pChecked) => { return ''; };
 
-		// Set the renderer to be markdown
-		libMarked.setOptions(
-			{
-				renderer: tmpTexRenderer,
-				gfm: true,
-				failOnUnsupported: false,
-				delRenderer: (pText) =>
-				{
-					// return TeX source to render deleted text
-					return ``;
-				},
-				linkRenderer: (pHref, pTitle, pText) =>
-				{
-					// return TeX source to render hyperlinks
-					return `\\href{${pHref}}{${pTitle} - ${pText}`;
-				},
-				imageRenderer: (pHref, pTitle, pText) =>
-				{
-					// return TeX source to render images
-					return `
-\\bigskip
-\\begin{center}
-\\includegraphics[width=0.7\\textwidth]{${pHref}}
-\\end{center}
+// 		// Set the renderer to be markdown
+// 		libMarked.setOptions(
+// 			{
+// 				renderer: tmpTexRenderer,
+// 				gfm: true,
+// 				failOnUnsupported: false,
+// 				delRenderer: (pText) =>
+// 				{
+// 					// return TeX source to render deleted text
+// 					return ``;
+// 				},
+// 				linkRenderer: (pHref, pTitle, pText) =>
+// 				{
+// 					// return TeX source to render hyperlinks
+// 					return `\\href{${pHref}}{${pTitle} - ${pText}`;
+// 				},
+// 				imageRenderer: (pHref, pTitle, pText) =>
+// 				{
+// 					// return TeX source to render images
+// 					return `
+// \\bigskip
+// \\begin{center}
+// \\includegraphics[width=0.7\\textwidth]{${pHref}}
+// \\end{center}
 
-`;
-				}
-			});
+// `;
+// 				}
+// 			});
 
-		return libMarked.parse(pMarkdown);
+// 		return libMarked.parse(pMarkdown);
 	}
 
 	latexHeadingSections(pHeadingText, pHeadingLevel, pHeadingRaw)
