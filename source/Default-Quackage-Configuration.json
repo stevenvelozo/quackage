@@ -1,11 +1,15 @@
 {
-	"QuackageBaseGulpfile": "require('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');",
+	"QuackageBaseGulpfile": "require('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');\nrequire('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile-Watch.js');",
 	"GulpfileConfiguration": {
 		"EntrypointInputSourceFile": "{~Data:AppData.CWD~}/{~Data:AppData.Package.main~}",
 		"LibraryObjectName": "{~PascalCaseIdentifier:AppData.Package.name~}",
 		"LibraryOutputFolder": "{~Data:AppData.CWD~}/dist/",
 		"LibraryUniminifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}js",
 		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js"
+	},
+	"WatchSettings": {
+		"MonitorFolders": ["./html", "./css", "./assets"],
+		"OnFilesChangedCommand": "npx quack copy"
 	},
 	"DefaultBabelRC": {
 		"presets": [

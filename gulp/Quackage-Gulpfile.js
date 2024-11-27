@@ -81,37 +81,37 @@ const libTerser = require('gulp-terser');
 
 // Build the module for the browser
 libGulp.task('minified',
-() => {
-	// set up the custom browserify instance for this task
-	var tmpBrowserify = libBrowserify(
-	{
-		entries: _CONFIG.EntrypointInputSourceFile,
-		standalone: _CONFIG.LibraryObjectName,
-		debug: true
-	});
+	() => {
+		// set up the custom browserify instance for this task
+		var tmpBrowserify = libBrowserify(
+			{
+				entries: _CONFIG.EntrypointInputSourceFile,
+				standalone: _CONFIG.LibraryObjectName,
+				debug: true
+			});
 
-	return tmpBrowserify.bundle()
-		.pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
-		.pipe(libVinylBuffer())
-		.pipe(libSourcemaps.init({loadMaps: true}))
-		// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
-		//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
-		.pipe(libBabel())
-		.pipe(libTerser()).on('error', console.log)
-		.pipe(libSourcemaps.write('./'))
-		.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
-});
+		return tmpBrowserify.bundle()
+			.pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
+			.pipe(libVinylBuffer())
+			.pipe(libSourcemaps.init({loadMaps: true}))
+			// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
+			//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
+			.pipe(libBabel())
+			.pipe(libTerser()).on('error', console.log)
+			.pipe(libSourcemaps.write('./'))
+			.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
+	});
 
 // Build the module for the browser
 libGulp.task('debug',
 	() => {
 		// set up the custom browserify instance for this task
 		var tmpBrowserify = libBrowserify(
-		{
-			entries: _CONFIG.EntrypointInputSourceFile,
-			standalone: _CONFIG.LibraryObjectName,
-			debug: true
-		});
+			{
+				entries: _CONFIG.EntrypointInputSourceFile,
+				standalone: _CONFIG.LibraryObjectName,
+				debug: true
+			});
 
 		return tmpBrowserify.bundle()
 			.pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
