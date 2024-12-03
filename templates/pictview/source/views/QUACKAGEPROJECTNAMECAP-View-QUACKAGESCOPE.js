@@ -1,6 +1,6 @@
 const libPictView = require('pict-view');
 
-_DEFAULT_CONFIGURATION_{~PascalCaseIdentifier:Record.Quackage.AppData.Package.name~}_{~PascalCaseIdentifier:Record.Scope~} = (
+const _DEFAULT_CONFIGURATION_{~PascalCaseIdentifier:Record.Quackage.AppData.Package.name~}_{~PascalCaseIdentifier:Record.Scope~} = (
 	{
 		ViewIdentifier: '{~PascalCaseIdentifier:Record.Quackage.AppData.Package.name~}{~PascalCaseIdentifier:Record.Scope~}',
 
