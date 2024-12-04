@@ -1,5 +1,6 @@
 {
-	"QuackageBaseGulpfile": "require('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');\nrequire('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile-Watch.js');",
+	"QuackageBaseGulpfile": "require('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');\nrequire('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');",
+	"QuackageBaseWatchGulpfile": "require('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');\nrequire('{~Data:AppData.QuackageFolder~}/gulp/Quackage-Gulpfile.js');",
 	"GulpfileConfiguration": {
 		"EntrypointInputSourceFile": "{~Data:AppData.CWD~}/{~Data:AppData.Package.main~}",
 		"LibraryObjectName": "{~PascalCaseIdentifier:AppData.Package.name~}",
