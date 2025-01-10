@@ -1,0 +1,42 @@
+{
+    "name": "test",
+    "version": "1.0.0",
+    "description": "",
+    "main": "source/CLI-Service.js",
+    "bin": {
+        "run_my_program": "./source/CLI-Run.js"
+    },
+    "scripts": {
+        "start": "node source/CLI-Service.js",
+        "test": "npx mocha -u tdd -R spec",
+        "tests": "npx mocha -u tdd --exit -R spec --grep",
+        "coverage": "npx nyc --reporter=lcov --reporter=text-lcov npx mocha -- -u tdd -R spec",
+        "build": "npx quack build"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "pict-service-commandlineutility": "^1.0.15"
+    },
+    "devDependencies": {
+        "quackage": "^1.0.36"
+    },
+    "mocha": {
+        "diff": true,
+        "extension": [
+            "js"
+        ],
+        "package": "./package.json",
+        "reporter": "spec",
+        "slow": "75",
+        "timeout": "5000",
+        "ui": "tdd",
+        "watch-files": [
+            "source/**/*.js",
+            "test/**/*.js"
+        ],
+        "watch-ignore": [
+            "lib/vendor"
+        ]
+    }
+}
