@@ -120,6 +120,7 @@ libGulp.task('debug',
 			// Oddly, having a .babelrc with this same thing behaves differently, and is the behavior we want
 			//.pipe(libBabel({"presets": ["@babel/preset-env"]}))
 			.pipe(libBabel()).on('error', console.log)
+			.pipe(libSourcemaps.write('./'))
 			.pipe(libGulp.dest(_CONFIG.LibraryOutputFolder));
 	});
 
