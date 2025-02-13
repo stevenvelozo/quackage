@@ -15,7 +15,8 @@
 	"DefaultBabelRC": {
 		"presets": [
 			"@babel/preset-env"
-		]
+		],
+		"sourceMaps": "both"
 	},
 	"GulpExecutions": [
 		{
