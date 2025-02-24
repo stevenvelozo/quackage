@@ -1,0 +1,15 @@
+{
+	"Entity": "Airport",
+	"GUIDTemplate": "Airport-{~D:iata~}",
+	"Mappings":
+	{
+		"Code": "{~D:iata~}",
+		"Name": "{~D:name~}",
+		"Description": "{~D:name~} airport in {~D:city~} auto-ingested from CSV file.",
+		"City": "{~D:city~}",
+		"State": "{~D:state~}",
+		"Country": "{~D:country~}",
+		"Latitude": "{~D:lat~}",
+		"Longitude": "{~D:long~}"
+	}
+}

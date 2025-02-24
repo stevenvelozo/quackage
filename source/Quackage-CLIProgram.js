@@ -35,6 +35,9 @@ let _Pict = new libCLIProgram(
 		// Template handling
 		require('./commands/Quackage-Command-AssembleJSONViews.js'),
 
+		// CSV file handling
+		require('./commands/Quackage-Command-CSVCheck.js'),
+
 		// Boilerplate file management
 		require('./commands/Quackage-Command-Boilerplate.js'),
 		require('./commands/Quackage-Command-ListTemplates.js'),

@@ -1,5 +1,6 @@
 # Test-specific ignores
 PictoView-View-Templates.json
+CSV-Stats-airports.csv.json
 
 # Quackage manager
 .browserslistrc-BACKUP
