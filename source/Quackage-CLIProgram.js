@@ -37,6 +37,8 @@ let _Pict = new libCLIProgram(
 
 		// CSV file handling
 		require('./commands/Quackage-Command-CSVCheck.js'),
+		require('./commands/Quackage-Command-CSVTransform.js'),
+		require('./commands/Quackage-Command-CSVIntersect.js'),
 
 		// Boilerplate file management
 		require('./commands/Quackage-Command-Boilerplate.js'),
