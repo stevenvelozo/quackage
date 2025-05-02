@@ -256,13 +256,13 @@ Note command-line will not allow you to use equal signs or commas in the templat
 						{
 							// Just use the implicit configuration
 							this.fable.log.info(`Using implicit configuration for comprehension; no valid explicit configuration available.`);
-							tmpMappingOutcome.Configuration = Object.assign({}, tmpMappingOutcome.CommandConfiguration, tmpMappingOutcome.ImplicitConfiguration);
+							tmpMappingOutcome.Configuration = Object.assign({}, tmpMappingOutcome.ImplicitConfiguration, tmpMappingOutcome.CommandConfiguration);
 						}
 						else
 						{
 							this.fable.log.info(`Using explicit configuration for comprehension.`);
 
-							tmpMappingOutcome.Configuration = Object.assign({}, tmpMappingOutcome.CommandConfiguration, tmpMappingOutcome.ImplicitConfiguration, tmpMappingOutcome.ExplicitConfiguration);
+							tmpMappingOutcome.Configuration = Object.assign({}, tmpMappingOutcome.ImplicitConfiguration, tmpMappingOutcome.ExplicitConfiguration, tmpMappingOutcome.CommandConfiguration);
 						}
 
 						if (!(tmpMappingOutcome.Configuration.Entity in tmpMappingOutcome.Comprehension))
