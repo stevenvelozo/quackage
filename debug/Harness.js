@@ -6,7 +6,7 @@ let libQuackage = require('../source/Quackage-CLIProgram.js');
 //libQuackage.run(['node', 'Harness.js', 'lint']);
 
 //libQuackage.run(['node', 'Harness.js', 'csvcheck', 'testdata/airports.csv', '-c']);
-libQuackage.run(['node', 'Harness.js', 'csvtransform', '/Users/stevenvelozo/Code/headlight/tmp/hdot_bridge_import/Batch2HL250411.csv', '-x', '-g', 'HDSS-BI-{~D:Record.Schedule_Bridge_ID~}-{~D:Record.Cycle~}']);
+libQuackage.run(['node', 'Harness.js', 'csvtransform', 'testdata/airports.csv', '-x', '-g', 'HDSS-BI-{~D:Record.iata~}-{~D:Record.name~}']);
 //libQuackage.run(['node', 'Harness.js', 'csvtransform', 'testdata/airports.csv', '-x']);
 //libQuackage.run(['node', 'Harness.js', 'csvtransform', 'testdata/airports.csv', '-x', '-m', 'testdata/Airport-Entity-Mapping.json']);
 //libQuackage.run(['node', 'Harness.js', 'csvtransform', 'testdata/airports.csv']);
