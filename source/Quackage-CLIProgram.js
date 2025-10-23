@@ -26,19 +26,13 @@ let _Pict = new libCLIProgram(
 
 		// Gulp build execution (for multiple build targets)
 		require('./commands/Quackage-Command-Build.js'),
-		require('./commands/Quackage-Command-Watch.js'),
 		require('./commands/Quackage-Command-CopyFilesFromTo.js'),
 
-		// Build documentation from a folder, with configuration magic if you want
-		require('./commands/Quackage-Command-BuildDocumentation.js'),
+		// Generate documentation from a folder of code
+		require('./commands/Quackage-Command-GenerateDocumentation.js'),
 
 		// Template handling
 		require('./commands/Quackage-Command-AssembleJSONViews.js'),
-
-		// CSV file handling
-		require('./commands/Quackage-Command-CSVCheck.js'),
-		require('./commands/Quackage-Command-CSVTransform.js'),
-		require('./commands/Quackage-Command-CSVIntersect.js'),
 
 		// Boilerplate file management
 		require('./commands/Quackage-Command-Boilerplate.js'),

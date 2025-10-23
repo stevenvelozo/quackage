@@ -1,18 +1,1 @@
-{
-	"Entity": "Airport",
-
-	"GUIDName": "GUIDAirport",
-	"GUIDTemplate": "Airport-{~D:Record.iata~}",
-
-	"Mappings":
-	{
-		"Code": "{~D:Record.iata~}",
-		"Name": "{~D:Record.name~}",
-		"Description": "{~D:Record.name~} airport in {~D:Record.city~} auto-ingested from CSV file.",
-		"City": "{~D:Record.city~}",
-		"State": "{~D:Record.state~}",
-		"Country": "{~D:Record.country~}",
-		"Latitude": "{~D:Record.lat~}",
-		"Longitude": "{~D:Record.long~}"
-	}
-}
+SN
