@@ -1,1 +1,0 @@
-Vets fix our animals and are therefore the best.
