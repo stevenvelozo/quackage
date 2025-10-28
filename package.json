@@ -1,6 +1,6 @@
 {
     "name": "quackage",
-    "version": "1.0.42",
+    "version": "1.0.43",
     "description": "Building.  Testing.  Quacking.  Reloading.",
     "main": "source/Quackage-CLIProgram.js",
     "scripts": {
@@ -67,5 +67,10 @@
         "pict-service-commandlineutility": "^1.0.15",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0"
+    },
+    "overrides": {
+        "copy-files-from-to": {
+            "yargs": "^16"
+        }
     }
 }
