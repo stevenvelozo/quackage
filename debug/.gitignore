@@ -4,6 +4,10 @@ CSV-Stats-airports.csv.json
 CSV-Comprehension-airports.csv.json
 CSV-Intersection-Fruit-Color.csv.json
 
+TestOutput.json
+conf.json
+
+
 # Quackage manager
 .browserslistrc-BACKUP
 .gulpfile-quackage-config.json
