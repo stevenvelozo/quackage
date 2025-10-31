@@ -15,7 +15,7 @@ class QuackageCommandGenerateDocumentation extends libCommandLineCommand
 		this.options.CommandKeyword = 'generate-documentation';
 		this.options.Description = 'Generate documentation from source files and markdown files';
 
-		this.options.CommandArguments.push({ Name: '<output_folder>', Description: 'The folder in which to generate content', Default: './dist' });
+		this.options.CommandArguments.push({ Name: '<output_folder>', Description: 'The folder in which to generate content' });
 
 		this.options.CommandOptions.push({ Name: '-m, --markdown [markdown_documentation_folder]', Description: 'Folder with markdwon documentation; subfolders are okay.', Default: '' });
 		this.options.CommandOptions.push({ Name: '-s, --source [source_code_folder]', Description: 'Folder with javascript source to parse jsdoc from.', Default: false });
@@ -53,7 +53,18 @@ class QuackageCommandGenerateDocumentation extends libCommandLineCommand
 				this.log.info(`Documentation Phase 0: Preparing configurations...`);
 				tmpOperationState.OutputFolderPath = libPath.resolve(tmpOperationState.RawOutputFolderPath);
 				tmpOperationState.OutputFolderExists = libFilePersistence.existsSync(tmpOperationState.OutputFolderPath);
+				if (tmpOperationState.OutputFolderExists === false)
+				{
+					this.log.info(`...creating output folder [${tmpOperationState.OutputFolderPath}]`);
+					libFS.mkdirSync(tmpOperationState.OutputFolderPath, { recursive: true });
+					tmpOperationState.OutputFolderExists = libFilePersistence.existsSync(tmpOperationState.OutputFolderPath);
+					if (tmpOperationState.OutputFolderExists === false)
+					{
+						return fNext(new Error(`Failed to create output folder [${tmpOperationState.OutputFolderPath}]`));
+					}
+				}
 				this.log.info(`Resolved output folder path to [${tmpOperationState.OutputFolderPath}] -- Exists: ${tmpOperationState.OutputFolderExists}`);
+				tmpOperationState.JSDocOutputPath = libPath.join(tmpOperationState.OutputFolderPath, 'JSDocOutput.json');
 				
 				if (tmpOperationState.RawSourceCodeFolder)
 				{
@@ -78,7 +89,7 @@ class QuackageCommandGenerateDocumentation extends libCommandLineCommand
 			function (fNext)
 			{
 				this.log.info(`Documentation Phase 1: Gathering documentation metadata...`);
-				libJSDocWrapper(tmpOperationState.SourceCodeFolderJSDocParameter, null, false, './', 60000, [], './TestOutput.json', fNext);
+				libJSDocWrapper(tmpOperationState.SourceCodeFolderJSDocParameter, null, false, './', 60000, [], tmpOperationState.JSDocOutputPath, fNext);
 			}.bind(this));
 
 		tmpAnticipate.anticipate(
