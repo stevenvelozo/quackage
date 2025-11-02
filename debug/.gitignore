@@ -1,4 +1,5 @@
 # Test-specific ignores
+output_docs
 PictoView-View-Templates.json
 CSV-Stats-airports.csv.json
 CSV-Comprehension-airports.csv.json
