@@ -9,6 +9,12 @@ This standardizes:
 1. Building an app for a browser
 2. Transpiling an app for ... older browsers
 3. Running unit tests
+4. Copying files around
+5. Managing package.json files in a standad way
+6. Assembling folders of JSON views into v7iew classes
+7. Boilerplate files and file structures
+8. Pulling documentation from codebases
+9. Compiling data description language files into their downstream parts (manifests, sql generation, documentation, etc.)
 
 ## Usage
 

@@ -203,9 +203,9 @@
         "Description": "A template set for fableservice ...",
         "Files": [
             {
-                "Hash": "FableServicejs",
-                "Path": "Fable-Service.js",
-                "Content": "const FableServiceProviderBase = require('fable-serviceproviderbase');\n\nconst _DefaultOptions = (\n\t{\n\t});\n\nclass FableService extends FableServiceProviderBase\n{\n\t/**\n\t * @param {import('fable')} pFable - The fable instance.\n\t * @param {Object<String, any>} [pOptions] - The options for the client.\n\t * @param {String} [pServiceHash] - A service hash for the fable service.\n\t */\n\tconstructor(pFable, pOptions, pServiceHash)\n\t{\n\t\tlet tmpOptions = Object.assign({}, _DefaultOptions, pOptions);\n\t\tsuper(pFable, tmpOptions, pServiceHash);\n\t}\n\n\tdoSomething()\n\t{\n\t\treturn true;\n\t}\n}\n\nmodule.exports = FableService;\n\nmodule.exports.default_configuration = _DefaultOptions;\n"
+                "Hash": "FableServiceQUACKAGESCOPEjs",
+                "Path": "Fable-Service-QUACKAGESCOPE.js",
+                "Content": "const libFableServiceProviderBase = require('fable-serviceproviderbase');\n\nconst _DefaultOptions = (\n\t{\n\t});\n\nclass FableService{~PascalCaseIdentifier:Record.Scope~} extends libFableServiceProviderBase\n{\n\t/**\n\t * @param {import('fable')} pFable - The fable instance.\n\t * @param {Object<String, any>} [pOptions] - The options for the client.\n\t * @param {String} [pServiceHash] - A service hash for the fable service.\n\t */\n\tconstructor(pFable, pOptions, pServiceHash)\n\t{\n\t\tconst tmpOptions = Object.assign({}, _DefaultOptions, pOptions);\n\t\tsuper(pFable, tmpOptions, pServiceHash);\n\t}\n\n\tdoSomething()\n\t{\n\t\treturn true;\n\t}\n}\n\nmodule.exports = FableService{~PascalCaseIdentifier:Record.Scope~};\nmodule.exports.default_configuration = _DefaultOptions;\n"
             }
         ]
     },

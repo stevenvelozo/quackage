@@ -1,10 +1,10 @@
-const FableServiceProviderBase = require('fable-serviceproviderbase');
+const libFableServiceProviderBase = require('fable-serviceproviderbase');
 
 const _DefaultOptions = (
 	{
 	});
 
-class FableService extends FableServiceProviderBase
+class FableService{~PascalCaseIdentifier:Record.Scope~} extends libFableServiceProviderBase
 {
 	/**
 	 * @param {import('fable')} pFable - The fable instance.
@@ -13,7 +13,7 @@ class FableService extends FableServiceProviderBase
 	 */
 	constructor(pFable, pOptions, pServiceHash)
 	{
-		let tmpOptions = Object.assign({}, _DefaultOptions, pOptions);
+		const tmpOptions = Object.assign({}, _DefaultOptions, pOptions);
 		super(pFable, tmpOptions, pServiceHash);
 	}
 
@@ -23,6 +23,5 @@ class FableService extends FableServiceProviderBase
 	}
 }
 
-module.exports = FableService;
-
+module.exports = FableService{~PascalCaseIdentifier:Record.Scope~};
 module.exports.default_configuration = _DefaultOptions;
