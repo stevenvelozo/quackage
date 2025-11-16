@@ -37,7 +37,11 @@ let _Pict = new libCLIProgram(
 		// Boilerplate file management
 		require('./commands/Quackage-Command-Boilerplate.js'),
 		require('./commands/Quackage-Command-ListTemplates.js'),
-		require('./commands/Quackage-Command-BuildTemplates.js')
+		require('./commands/Quackage-Command-BuildTemplates.js'),
+
+		// Stricture
+		require('./commands/stricture//Quackage-Command-Stricture-Compile.js'),
+		require('./commands/stricture/Quackage-Command-StrictureLegacy.js')
 	]);
 
 // Instantiate the file persistence service
