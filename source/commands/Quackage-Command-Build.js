@@ -10,7 +10,6 @@ class QuackageCommandBuild extends libCommandLineCommand
 		this.options.CommandKeyword = 'build';
 		this.options.Description = 'Build your npm module into a dist folder';
 
-		// Auto add the command on initialization
 		this.addCommand();
 	}
 

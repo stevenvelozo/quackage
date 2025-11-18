@@ -12,6 +12,7 @@ class QuackageCommandBoilerplate extends libCommandLineCommand
 		this.options.Description = 'List the available boilerplate template filesets in your user, local and the built-in .quackage-templates.json file(s).';
 
 		this.options.Aliases.push('list');
+		this.options.Aliases.push('ls');
 		this.options.Aliases.push('lt');
 
 		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.pict.ProgramConfiguration, null, 4));

@@ -16,7 +16,6 @@ class QuackageCommandUpdatePackage extends libCommandLineCommand
 
 		this.options.Aliases.push('lux');
 
-		// Auto add the command on initialization
 		this.addCommand();
 	}
 

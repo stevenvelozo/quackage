@@ -17,7 +17,6 @@ class QuackageCommandBuildTemplates extends libCommandLineCommand
 
 		this.templateSets = {};
 
-		// Auto add the command on initialization
 		this.addCommand();
 	}
 

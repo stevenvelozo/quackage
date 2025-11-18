@@ -14,7 +14,6 @@ class QuackageCommandBuild extends libCommandLineCommand
 
 		this.options.Aliases.push('test');
 
-		// Auto add the command on initialization
 		this.addCommand();
 	}
 

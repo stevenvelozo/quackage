@@ -11,6 +11,7 @@ class QuackageCommandCopyFilesFromTo extends libCommandLineCommand
 		this.options.Description = 'Copy files to a stage location.';
 
 		this.options.Aliases.push('copy');
+		this.options.Aliases.push('cp');
 
 		// Auto add the command on initialization
 		this.addCommand();
