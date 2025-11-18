@@ -9,6 +9,7 @@ class QuackageCommandUpdatePackage extends libCommandLineCommand
 
 		this.options.CommandKeyword = 'luxuryupdatepackage';
 		this.options.Description = 'Update your package.json to build and run luxury code containers';
+		this.options.Aliases.push('luxury_update_package');
 
 		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.pict.ProgramConfiguration, null, 4));
 

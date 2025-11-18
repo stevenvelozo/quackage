@@ -9,10 +9,9 @@ class QuackageCommandBuild extends libCommandLineCommand
 
 		this.options.CommandKeyword = 'run-mocha-tests';
 		this.options.Description = 'Run mocha tests in your tests/ folder.';
+		this.options.Aliases.push('test');
 
 		this.options.CommandOptions.push({ Name: '-g, --grep [search_expression]', Description: 'A grep search expression for the subset of tests you want to run.' });
-
-		this.options.Aliases.push('test');
 
 		this.addCommand();
 	}

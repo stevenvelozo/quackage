@@ -9,12 +9,12 @@ class QuackageCommandUpdatePackage extends libCommandLineCommand
 
 		this.options.CommandKeyword = 'updatepackage';
 		this.options.Description = 'Update your package.json to support streamlined testing, building and coverage';
+		this.options.Aliases.push('update_package');
 
 		this.fable.TemplateProvider.addTemplate('PrototypePackage', JSON.stringify(this.pict.ProgramConfiguration, null, 4));
 
 		this.options.CommandOptions.push({ Name: '-f, --force', Description: 'Force overwrite anything in the package.json; use at your own quacking peril' });
 
-		// Auto add the command on initialization
 		this.addCommand();
 	}
 
