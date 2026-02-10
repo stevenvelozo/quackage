@@ -118,6 +118,11 @@ class QuackageCommandPrepareDocs extends libCommandLineCommand
 					return fCallback(pError);
 				}
 
+				// Ensure .nojekyll exists for GitHub Pages compatibility
+				let tmpNoJekyllPath = libPath.join(tmpDocsFolder, '.nojekyll');
+				libFS.writeFileSync(tmpNoJekyllPath, '');
+				this.log.info(`Wrote .nojekyll to [${tmpNoJekyllPath}]`);
+
 				this.log.info(`Documentation preparation complete!`);
 				this.log.info(`  Catalog: ${tmpCatalogFile}`);
 				this.log.info(`  Keyword Index: ${tmpKeywordIndexFile}`);

@@ -1,6 +1,6 @@
 {
     "name": "quackage",
-    "version": "1.0.45",
+    "version": "1.0.46",
     "description": "Building.  Testing.  Quacking.  Reloading.",
     "main": "source/Quackage-CLIProgram.js",
     "scripts": {
@@ -55,16 +55,17 @@
         "browserify": "^17.0.0",
         "chai": "4.3.10",
         "copy-files-from-to": "^3.11.0",
-        "docsify-cli": "^4.4.4",
         "gulp": "^4.0.2",
         "gulp-babel": "^8.0.0",
         "gulp-env": "^0.4.0",
         "gulp-sourcemaps": "^3.0.0",
         "gulp-terser": "^2.1.0",
+        "indoctrinate": "^1.0.3",
         "jsdoc": "^4.0.5",
         "mocha": "10.4.0",
         "npm-check-updates": "^18.0.1",
         "nyc": "^15.1.0",
+        "pict-docuserve": "^0.0.1",
         "pict-service-commandlineutility": "^1.0.16",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0"
