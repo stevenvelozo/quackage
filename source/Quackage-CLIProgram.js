@@ -41,7 +41,14 @@ let _Pict = new libCLIProgram(
 
 		// Stricture
 		require('./commands/stricture//Quackage-Command-Stricture-Compile.js'),
-		require('./commands/stricture/Quackage-Command-StrictureLegacy.js')
+		require('./commands/stricture/Quackage-Command-StrictureLegacy.js'),
+
+		// Documentation preparation (indoctrinate + pict-docuserve)
+		require('./commands/Quackage-Command-Indoctrinate.js'),
+		require('./commands/Quackage-Command-IndoctrinateIndex.js'),
+		require('./commands/Quackage-Command-DocuserveInject.js'),
+		require('./commands/Quackage-Command-PrepareDocs.js'),
+		require('./commands/Quackage-Command-DocuserveServe.js')
 	]);
 
 // Instantiate the file persistence service
