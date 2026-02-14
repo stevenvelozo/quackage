@@ -65,8 +65,8 @@
         "mocha": "10.4.0",
         "npm-check-updates": "^18.0.1",
         "nyc": "^15.1.0",
-        "pict-docuserve": "^0.0.4",
-        "pict-service-commandlineutility": "^1.0.17",
+        "pict-docuserve": "^0.0.8",
+        "pict-service-commandlineutility": "^1.0.18",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0"
     },
