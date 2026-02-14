@@ -11,7 +11,7 @@ class QuackageCommandPrepareDocs extends libCommandLineCommand
 		this.options.CommandKeyword = 'prepare-docs';
 		this.options.Description = 'Prepare documentation: generate catalog, build keyword index and inject pict-docuserve assets.';
 
-		this.options.CommandArguments.push({ Name: '<docs_folder>', Description: 'The documentation folder to prepare.' });
+		this.options.CommandArguments.push({ Name: '[docs_folder]', Description: 'The documentation folder to prepare.' });
 
 		this.options.CommandOptions.push({ Name: '-d, --directory_root [directory_root]', Description: 'Root directory to scan for modules (defaults to CWD).', Default: '' });
 		this.options.CommandOptions.push({ Name: '-b, --branch [branch]', Description: 'Git branch for GitHub raw URLs (defaults to master).', Default: 'master' });
@@ -25,7 +25,7 @@ class QuackageCommandPrepareDocs extends libCommandLineCommand
 
 	onRunAsync(fCallback)
 	{
-		let tmpDocsFolder = libPath.resolve(this.ArgumentString || '.');
+		let tmpDocsFolder = libPath.resolve(this.ArgumentString || './docs');
 		let tmpDirectoryRoot = this.CommandOptions.directory_root || this.fable.AppData.CWD;
 		let tmpBranch = this.CommandOptions.branch || 'master';
 		let tmpGitHubOrg = this.CommandOptions.github_org || 'stevenvelozo';

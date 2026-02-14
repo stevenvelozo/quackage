@@ -2,20 +2,19 @@ const libCommandLineCommand = require('pict-service-commandlineutility').Service
 const libFS = require('fs');
 const libPath = require('path');
 
-class QuackageCommandDocuserveServe extends libCommandLineCommand
+class QuackageCommandDocuservePrepareLocal extends libCommandLineCommand
 {
 	constructor(pFable, pManifest, pServiceHash)
 	{
 		super(pFable, pManifest, pServiceHash);
 
-		this.options.CommandKeyword = 'docs-serve';
-		this.options.Description = 'Serve a documentation folder locally using pict-docuserve.';
+		this.options.CommandKeyword = 'prepare-local';
+		this.options.Description = 'Copy local pict and pict-docuserve JS bundles into a docs folder for offline use.';
 
-		this.options.CommandArguments.push({ Name: '[docs_folder]', Description: 'The documentation folder to serve.' });
+		this.options.CommandArguments.push({ Name: '[docs_folder]', Description: 'The documentation folder to stage local JS bundles into.' });
 
-		this.options.CommandOptions.push({ Name: '-p, --port [port]', Description: 'Port to serve on.', Default: '3333' });
-
-		this.options.Aliases.push('serve-docs');
+		this.options.Aliases.push('local-docs');
+		this.options.Aliases.push('stage-local');
 
 		this.addCommand();
 	}
@@ -23,11 +22,9 @@ class QuackageCommandDocuserveServe extends libCommandLineCommand
 	onRunAsync(fCallback)
 	{
 		let tmpDocsFolder = libPath.resolve(this.ArgumentString || './docs');
-		let tmpPort = this.CommandOptions.port || '3333';
 
-		this.log.info(`Serving documentation with pict-docuserve...`);
-		this.log.info(`  Docs folder: ${tmpDocsFolder}`);
-		this.log.info(`  Port: ${tmpPort}`);
+		this.log.info(`Staging local JS bundles into documentation folder...`);
+		this.log.info(`  Target: ${tmpDocsFolder}`);
 
 		if (!libFS.existsSync(tmpDocsFolder))
 		{
@@ -46,9 +43,8 @@ class QuackageCommandDocuserveServe extends libCommandLineCommand
 		this.fable.QuackageProcess.execute(
 			tmpDocuserveLocation,
 			[
-				'serve',
-				tmpDocsFolder,
-				'--port', tmpPort
+				'prepare-local',
+				tmpDocsFolder
 			],
 			{ cwd: this.fable.AppData.CWD },
 			fCallback
@@ -76,4 +72,4 @@ class QuackageCommandDocuserveServe extends libCommandLineCommand
 	}
 }
 
-module.exports = QuackageCommandDocuserveServe;
+module.exports = QuackageCommandDocuservePrepareLocal;
