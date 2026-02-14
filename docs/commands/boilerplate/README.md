@@ -12,9 +12,9 @@ Commands for generating and managing file templates. Quackage uses a JSON-based 
 
 Template filesets are stored in `.quackage-templates.json` files. Quackage merges templates from three sources (in order):
 
-1. **Built-in** -- shipped with the quackage package
-2. **Project** -- `.quackage-templates.json` in your current working directory
-3. **Home** -- `~/.quackage-templates.json` in your home directory
+1. Built-in -- shipped with the quackage package
+2. Project -- `.quackage-templates.json` in your current working directory
+3. Home -- `~/.quackage-templates.json` in your home directory
 
 Later sources override earlier ones, so you can customize built-in templates at the project or user level.
 

@@ -8,7 +8,7 @@ Copy files to a staging location using the `copy-files-from-to` utility.
 quack copy-files-from-to
 ```
 
-**Aliases:** `copy`, `cp`
+Aliases: `copy`, `cp`
 
 ## Behavior
 

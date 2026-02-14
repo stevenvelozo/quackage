@@ -8,7 +8,7 @@ Create template filesets from the contents of a folder. Each top-level subfolder
 quack buildtemplates <folder>
 ```
 
-**Aliases:** `bt`
+Aliases: `bt`
 
 ## Arguments
 

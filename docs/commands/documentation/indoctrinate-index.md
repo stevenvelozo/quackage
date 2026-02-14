@@ -8,7 +8,7 @@ Generate a Lunr keyword search index from module documentation using Indoctrinat
 quack indoctrinate-index <docs_folder> [options]
 ```
 
-**Aliases:** `indoc-index`, `keyword-index`
+Aliases: `indoc-index`, `keyword-index`
 
 ## Arguments
 

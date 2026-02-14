@@ -23,11 +23,11 @@ The build command runs one or more Gulp-based build targets. By default, quackag
 
 For each build target, the command:
 
-1. **Writes `.browserslistrc`** -- sets the Browserslist query for this target. Backs up any existing file to `.browserslistrc-BACKUP`
-2. **Writes `.babelrc`** -- creates a Babel config with `@babel/preset-env` and source maps (only if `.babelrc` doesn't already exist)
-3. **Writes `.gulpfile-quackage-config.json`** -- the Gulp configuration with entry point, output folder and file names, resolved from your `package.json` `main` field
-4. **Writes `.gulpfile-quackage.js`** -- the Gulp entry point that requires the quackage gulpfile
-5. **Runs Gulp** -- executes the build using the generated gulpfile
+1. Writes `.browserslistrc` -- sets the Browserslist query for this target. Backs up any existing file to `.browserslistrc-BACKUP`
+2. Writes `.babelrc` -- creates a Babel config with `@babel/preset-env` and source maps (only if `.babelrc` doesn't already exist)
+3. Writes `.gulpfile-quackage-config.json` -- the Gulp configuration with entry point, output folder and file names, resolved from your `package.json` `main` field
+4. Writes `.gulpfile-quackage.js` -- the Gulp entry point that requires the quackage gulpfile
+5. Runs Gulp -- executes the build using the generated gulpfile
 
 ### Build Configuration
 

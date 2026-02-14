@@ -4,6 +4,8 @@
 
 Quackage is a CLI toolkit for managing, building, testing and documenting JavaScript/Node.js modules. It wraps common tools (Gulp, Mocha, Babel, Browserify, JSDoc, Indoctrinate, pict-docuserve) behind a consistent command interface and manages `package.json` configuration so every module in your ecosystem follows the same conventions.
 
+Quackage exists because maintaining dozens of modules by hand is tedious and error-prone. Instead of copy-pasting npm scripts, Babel configs and Gulp tasks between projects, quackage keeps a single canonical set of defaults and applies them everywhere. When conventions change, one `quack updatepackage` brings every module up to date.
+
 ## Installation
 
 ```bash
@@ -82,6 +84,7 @@ Commands for generating and serving documentation.
 | `indoctrinate-index` | `indoc-index`, `keyword-index` | Generate a keyword search index |
 | `docuserve-inject` | `docuserve`, `inject-docs` | Inject pict-docuserve assets for static hosting |
 | `prepare-docs` | `docs`, `prep-docs` | All-in-one documentation preparation |
+| `prepare-local` | `local-docs`, `stage-local` | Copy local JS bundles for offline use |
 | `docs-serve` | `serve-docs` | Serve documentation locally |
 
 ## Configuration
@@ -90,12 +93,12 @@ Quackage looks for a `.quackage.json` file in your project root for custom confi
 
 Key configuration sections:
 
-- **GulpExecutions** -- Build targets (default and compatible)
-- **GulpfileConfiguration** -- Entry point, output folder, file naming
-- **DefaultBabelRC** -- Babel preset and source map settings
-- **PackageScripts** -- Standard npm scripts quackage manages
-- **LuxuryPackageScripts** -- Docker dev environment scripts
-- **WatchSettings** -- Folders and commands for file watching
+- `GulpExecutions` -- Build targets (default and compatible)
+- `GulpfileConfiguration` -- Entry point, output folder, file naming
+- `DefaultBabelRC` -- Babel preset and source map settings
+- `PackageScripts` -- Standard npm scripts quackage manages
+- `LuxuryPackageScripts` -- Docker dev environment scripts
+- `WatchSettings` -- Folders and commands for file watching
 
 ## Executable Resolution
 

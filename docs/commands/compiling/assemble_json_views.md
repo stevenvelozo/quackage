@@ -8,7 +8,7 @@ Assemble Pict JSON view configurations from a folder of HTML or template files.
 quack assemble_json_views <folder> [options]
 ```
 
-**Aliases:** `ajv`
+Aliases: `ajv`
 
 ## Arguments
 

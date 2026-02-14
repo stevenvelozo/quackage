@@ -8,7 +8,7 @@ Add standard test, build, coverage and documentation scripts to your `package.js
 quack updatepackage [options]
 ```
 
-**Aliases:** `update_package`
+Aliases: `update_package`
 
 ## Options
 
@@ -21,8 +21,8 @@ quack updatepackage [options]
 1. Reads the current `package.json` from the working directory
 2. Compares each quackage-managed section (e.g. `mocha`) against the canonical defaults
 3. Compares each quackage-managed npm script against the canonical scripts
-4. **Without `--force`:** only adds sections and scripts that are missing; existing values are reported but not overwritten
-5. **With `--force`:** overwrites all managed sections and scripts regardless of current values
+4. Without `--force`: only adds sections and scripts that are missing; existing values are reported but not overwritten
+5. With `--force`: overwrites all managed sections and scripts regardless of current values
 6. Backs up the original `package.json` to `.package.json.quackage.bak`
 7. Writes the updated `package.json`
 

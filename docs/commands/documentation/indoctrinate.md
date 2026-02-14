@@ -8,7 +8,7 @@ Generate a documentation catalog from module documentation folders using the Ind
 quack indoctrinate <docs_folder> [options]
 ```
 
-**Aliases:** `indoc`
+Aliases: `indoc`
 
 ## Arguments
 

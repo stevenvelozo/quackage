@@ -8,7 +8,7 @@ Run a legacy Stricture command.
 quack stricture-legaacy <output_folder> [options]
 ```
 
-**Aliases:** `str`
+Aliases: `str`
 
 ## Arguments
 
@@ -24,7 +24,7 @@ quack stricture-legaacy <output_folder> [options]
 
 ## Status
 
-> **Stub:** This command is currently a placeholder. It accepts arguments and options but does not yet perform any processing. It is intended to provide backward compatibility with older Stricture workflows.
+> Stub: This command is currently a placeholder. It accepts arguments and options but does not yet perform any processing. It is intended to provide backward compatibility with older Stricture workflows.
 
 ## Example
 

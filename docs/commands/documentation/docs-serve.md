@@ -8,7 +8,7 @@ Serve a documentation folder locally using pict-docuserve.
 quack docs-serve [docs_folder] [options]
 ```
 
-**Aliases:** `serve-docs`
+Aliases: `serve-docs`
 
 ## Arguments
 

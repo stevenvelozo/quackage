@@ -8,7 +8,7 @@ All-in-one documentation preparation. Generates the catalog, builds the keyword 
 quack prepare-docs [docs_folder] [options]
 ```
 
-**Aliases:** `docs`, `prep-docs`
+Aliases: `docs`, `prep-docs`
 
 ## Arguments
 

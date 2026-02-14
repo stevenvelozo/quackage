@@ -8,7 +8,7 @@ Compile Stricture DDL into a Meadow schema file.
 quack stricture-compile <output_folder> [options]
 ```
 
-**Aliases:** `scomp`
+Aliases: `scomp`
 
 ## Arguments
 
@@ -24,7 +24,7 @@ quack stricture-compile <output_folder> [options]
 
 ## Status
 
-> **Stub:** This command is currently a placeholder. It accepts arguments and options but does not yet perform compilation. The implementation will compile Stricture DDL definitions into the JSON schema format consumed by Meadow.
+> Stub: This command is currently a placeholder. It accepts arguments and options but does not yet perform compilation. The implementation will compile Stricture DDL definitions into the JSON schema format consumed by Meadow.
 
 ## Example
 

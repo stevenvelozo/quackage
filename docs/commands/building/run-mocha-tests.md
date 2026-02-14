@@ -8,7 +8,7 @@ Run Mocha tests in TDD mode with the spec reporter.
 quack run-mocha-tests [options]
 ```
 
-**Aliases:** `test`
+Aliases: `test`
 
 ## Options
 

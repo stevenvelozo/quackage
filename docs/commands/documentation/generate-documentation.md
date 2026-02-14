@@ -8,7 +8,7 @@ Generate JSDoc documentation from source files.
 quack generate-documentation <output_folder> [options]
 ```
 
-**Aliases:** `dgen`
+Aliases: `dgen`
 
 ## Arguments
 

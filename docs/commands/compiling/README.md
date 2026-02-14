@@ -14,7 +14,7 @@ Commands for compiling schema definitions and assembling view configurations. Th
 
 Stricture is the schema definition language for Meadow (the Retold ORM layer). The `stricture-compile` and `stricture-legaacy` commands provide quackage integration points for compiling Stricture DDL files into the JSON schema format Meadow expects.
 
-> **Note:** Both Stricture commands are currently placeholder stubs awaiting full implementation. They accept arguments and options but do not yet perform compilation.
+> Note: Both Stricture commands are currently placeholder stubs awaiting full implementation. They accept arguments and options but do not yet perform compilation.
 
 ### Pict View Assembly
 

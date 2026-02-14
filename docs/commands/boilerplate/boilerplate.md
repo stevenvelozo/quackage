@@ -8,7 +8,7 @@ Generate files from a named template fileset.
 quack boilerplate <fileset> [options]
 ```
 
-**Aliases:** `boil`, `bp`
+Aliases: `boil`, `bp`
 
 ## Arguments
 

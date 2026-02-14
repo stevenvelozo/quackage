@@ -8,7 +8,7 @@ List all available boilerplate template filesets.
 quack listtemplates
 ```
 
-**Aliases:** `list`, `ls`, `lt`
+Aliases: `list`, `ls`, `lt`
 
 ## Behavior
 

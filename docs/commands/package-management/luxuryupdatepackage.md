@@ -8,7 +8,7 @@ Add Docker-based luxury development environment scripts to your `package.json`.
 quack luxuryupdatepackage [options]
 ```
 
-**Aliases:** `luxury_update_package`, `lux`
+Aliases: `luxury_update_package`, `lux`
 
 ## Options
 
