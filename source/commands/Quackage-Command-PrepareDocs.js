@@ -55,6 +55,17 @@ class QuackageCommandPrepareDocs extends libCommandLineCommand
 		let tmpCatalogFile = libPath.join(tmpDocsFolder, 'retold-catalog.json');
 		let tmpKeywordIndexFile = libPath.join(tmpDocsFolder, 'retold-keyword-index.json');
 
+		// Check if docs folder differs from module root — if so, we need to
+		// also scan the docs folder for local content (architecture pages,
+		// examples, etc.) so they appear in search results.
+		let tmpDocsContentRoot = libPath.resolve(tmpDocsFolder);
+		let tmpResolvedDirectoryRoot = libPath.resolve(tmpDirectoryRoot);
+		let tmpExtraScanArgs = [];
+		if (tmpDocsContentRoot !== tmpResolvedDirectoryRoot)
+		{
+			tmpExtraScanArgs = ['-e', tmpDocsContentRoot];
+		}
+
 		let tmpAnticipate = this.fable.newAnticipate();
 
 		// Step 1: Generate the documentation catalog
@@ -87,7 +98,7 @@ class QuackageCommandPrepareDocs extends libCommandLineCommand
 						'generate_keyword_index',
 						'-d', tmpDirectoryRoot,
 						'-o', tmpKeywordIndexFile
-					],
+					].concat(tmpExtraScanArgs),
 					{ cwd: this.fable.AppData.CWD },
 					fNext
 				);
