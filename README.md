@@ -50,3 +50,15 @@ npx quack test
 ```shell
 npx quack enhance-my-package
 ```
+
+## Related Packages
+
+- [indoctrinate](https://github.com/stevenvelozo/indoctrinate) - Documentation scaffolding
+
+## License
+
+MIT
+
+## Contributing
+
+Pull requests are welcome. For details on our code of conduct, contribution process, and testing requirements, see the [Retold Contributing Guide](https://github.com/stevenvelozo/retold/blob/main/docs/contributing.md).
