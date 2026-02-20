@@ -435,36 +435,29 @@ suite
 			{
 				test
 				(
-					'ExamplesBuild command class should require and have expected methods.',
+					'ExamplesBuild command class should require and have onRunAsync.',
 					function()
 					{
 						let tmpExamplesBuild = require('../source/commands/html_example_serving/Quackage-Command-ExamplesBuild.js');
 						Expect(tmpExamplesBuild).to.be.a('function');
-						Expect(tmpExamplesBuild.prototype.gatherExampleFolders).to.be.a('function');
-						Expect(tmpExamplesBuild.prototype.resolveExecutable).to.be.a('function');
 						Expect(tmpExamplesBuild.prototype.onRunAsync).to.be.a('function');
 					}
 				);
 
 				test
 				(
-					'ExamplesServe command class should require and have expected methods.',
+					'ExamplesServe command class should require and have onRunAsync.',
 					function()
 					{
 						let tmpExamplesServe = require('../source/commands/html_example_serving/Quackage-Command-ExamplesServe.js');
 						Expect(tmpExamplesServe).to.be.a('function');
-						Expect(tmpExamplesServe.prototype.gatherServableExamples).to.be.a('function');
-						Expect(tmpExamplesServe.prototype.hashProjectNameToPort).to.be.a('function');
-						Expect(tmpExamplesServe.prototype.generateIndexHTML).to.be.a('function');
-						Expect(tmpExamplesServe.prototype.formatDisplayName).to.be.a('function');
-						Expect(tmpExamplesServe.prototype.getMimeType).to.be.a('function');
 						Expect(tmpExamplesServe.prototype.onRunAsync).to.be.a('function');
 					}
 				);
 
 				test
 				(
-					'Examples combined command class should require and have expected methods.',
+					'Examples combined command class should require and have onRunAsync.',
 					function()
 					{
 						let tmpExamples = require('../source/commands/html_example_serving/Quackage-Command-Examples.js');
@@ -472,15 +465,48 @@ suite
 						Expect(tmpExamples.prototype.onRunAsync).to.be.a('function');
 					}
 				);
+			}
+		);
+
+		suite
+		(
+			'QuackageExampleService',
+			function()
+			{
+				test
+				(
+					'QuackageExampleService should be instantiated on the pict instance.',
+					function()
+					{
+						Expect(libQuackage.QuackageExampleService).to.be.an('object');
+						Expect(libQuackage.QuackageExampleService.serviceType).to.equal('QuackageExampleService');
+					}
+				);
 
 				test
 				(
-					'ExamplesBuild.gatherExampleFolders should return empty array for nonexistent path.',
+					'QuackageExampleService should have expected methods.',
 					function()
 					{
-						let tmpExamplesBuild = require('../source/commands/html_example_serving/Quackage-Command-ExamplesBuild.js');
-						// Call the method without instantiation by borrowing it with a mock context
-						let tmpResult = tmpExamplesBuild.prototype.gatherExampleFolders.call({}, '/nonexistent/path/that/does/not/exist');
+						let tmpService = libQuackage.QuackageExampleService;
+						Expect(tmpService.gatherExampleFolders).to.be.a('function');
+						Expect(tmpService.gatherServableExamples).to.be.a('function');
+						Expect(tmpService.formatDisplayName).to.be.a('function');
+						Expect(tmpService.hashProjectNameToPort).to.be.a('function');
+						Expect(tmpService.getMimeType).to.be.a('function');
+						Expect(tmpService.generateIndexHTML).to.be.a('function');
+						Expect(tmpService.resolveExecutable).to.be.a('function');
+						Expect(tmpService.buildExamples).to.be.a('function');
+						Expect(tmpService.serveExamples).to.be.a('function');
+					}
+				);
+
+				test
+				(
+					'gatherExampleFolders should return empty array for nonexistent path.',
+					function()
+					{
+						let tmpResult = libQuackage.QuackageExampleService.gatherExampleFolders('/nonexistent/path/that/does/not/exist');
 						Expect(tmpResult).to.be.an('array');
 						Expect(tmpResult).to.have.length(0);
 					}
@@ -488,13 +514,10 @@ suite
 
 				test
 				(
-					'ExamplesServe.gatherServableExamples should return empty array for nonexistent path.',
+					'gatherServableExamples should return empty array for nonexistent path.',
 					function()
 					{
-						let tmpExamplesServe = require('../source/commands/html_example_serving/Quackage-Command-ExamplesServe.js');
-						let tmpResult = tmpExamplesServe.prototype.gatherServableExamples.call({
-							formatDisplayName: tmpExamplesServe.prototype.formatDisplayName
-						}, '/nonexistent/path/that/does/not/exist');
+						let tmpResult = libQuackage.QuackageExampleService.gatherServableExamples('/nonexistent/path/that/does/not/exist');
 						Expect(tmpResult).to.be.an('array');
 						Expect(tmpResult).to.have.length(0);
 					}
@@ -502,22 +525,21 @@ suite
 
 				test
 				(
-					'ExamplesServe.hashProjectNameToPort should return a port in the expected range.',
+					'hashProjectNameToPort should return a port in the expected range.',
 					function()
 					{
-						let tmpExamplesServe = require('../source/commands/html_example_serving/Quackage-Command-ExamplesServe.js');
-						let tmpHash = tmpExamplesServe.prototype.hashProjectNameToPort;
+						let tmpService = libQuackage.QuackageExampleService;
 
-						let tmpPort1 = tmpHash('pict-section-form');
+						let tmpPort1 = tmpService.hashProjectNameToPort('pict-section-form');
 						Expect(tmpPort1).to.be.at.least(9000);
 						Expect(tmpPort1).to.be.at.most(9500);
 
-						let tmpPort2 = tmpHash('pict-section-objecteditor');
+						let tmpPort2 = tmpService.hashProjectNameToPort('pict-section-objecteditor');
 						Expect(tmpPort2).to.be.at.least(9000);
 						Expect(tmpPort2).to.be.at.most(9500);
 
 						// Same input should produce same output (deterministic)
-						let tmpPort3 = tmpHash('pict-section-form');
+						let tmpPort3 = tmpService.hashProjectNameToPort('pict-section-form');
 						Expect(tmpPort3).to.equal(tmpPort1);
 
 						// Different inputs should (very likely) produce different ports
@@ -527,52 +549,49 @@ suite
 
 				test
 				(
-					'ExamplesServe.formatDisplayName should convert folder names to title case.',
+					'formatDisplayName should convert folder names to title case.',
 					function()
 					{
-						let tmpExamplesServe = require('../source/commands/html_example_serving/Quackage-Command-ExamplesServe.js');
-						let tmpFormat = tmpExamplesServe.prototype.formatDisplayName;
+						let tmpService = libQuackage.QuackageExampleService;
 
-						Expect(tmpFormat('simple_form')).to.equal('Simple Form');
-						Expect(tmpFormat('complex-table')).to.equal('Complex Table');
-						Expect(tmpFormat('debug')).to.equal('Debug');
-						Expect(tmpFormat('my_cool-example')).to.equal('My Cool Example');
+						Expect(tmpService.formatDisplayName('simple_form')).to.equal('Simple Form');
+						Expect(tmpService.formatDisplayName('complex-table')).to.equal('Complex Table');
+						Expect(tmpService.formatDisplayName('debug')).to.equal('Debug');
+						Expect(tmpService.formatDisplayName('my_cool-example')).to.equal('My Cool Example');
 					}
 				);
 
 				test
 				(
-					'ExamplesServe.getMimeType should return correct MIME types.',
+					'getMimeType should return correct MIME types.',
 					function()
 					{
-						let tmpExamplesServe = require('../source/commands/html_example_serving/Quackage-Command-ExamplesServe.js');
-						let tmpMime = tmpExamplesServe.prototype.getMimeType;
+						let tmpService = libQuackage.QuackageExampleService;
 
-						Expect(tmpMime('.html')).to.equal('text/html');
-						Expect(tmpMime('.js')).to.equal('text/javascript');
-						Expect(tmpMime('.css')).to.equal('text/css');
-						Expect(tmpMime('.json')).to.equal('application/json');
-						Expect(tmpMime('.png')).to.equal('image/png');
-						Expect(tmpMime('.svg')).to.equal('image/svg+xml');
-						Expect(tmpMime('.map')).to.equal('application/json');
-						Expect(tmpMime('.xyz')).to.equal('application/octet-stream');
+						Expect(tmpService.getMimeType('.html')).to.equal('text/html');
+						Expect(tmpService.getMimeType('.js')).to.equal('text/javascript');
+						Expect(tmpService.getMimeType('.css')).to.equal('text/css');
+						Expect(tmpService.getMimeType('.json')).to.equal('application/json');
+						Expect(tmpService.getMimeType('.png')).to.equal('image/png');
+						Expect(tmpService.getMimeType('.svg')).to.equal('image/svg+xml');
+						Expect(tmpService.getMimeType('.map')).to.equal('application/json');
+						Expect(tmpService.getMimeType('.xyz')).to.equal('application/octet-stream');
 					}
 				);
 
 				test
 				(
-					'ExamplesServe.generateIndexHTML should produce valid HTML with example links.',
+					'generateIndexHTML should produce valid HTML with example links.',
 					function()
 					{
-						let tmpExamplesServe = require('../source/commands/html_example_serving/Quackage-Command-ExamplesServe.js');
-						let tmpGenerate = tmpExamplesServe.prototype.generateIndexHTML;
+						let tmpService = libQuackage.QuackageExampleService;
 
 						let tmpExamples = [
 							{ Name: 'simple_form', DisplayName: 'Simple Form', RelativePath: 'simple_form/dist/index.html', Type: 'example' },
 							{ Name: 'debug', DisplayName: 'Debug', RelativePath: 'debug/index.html', Type: 'debug' }
 						];
 
-						let tmpHTML = tmpGenerate('test-project', tmpExamples, 9123);
+						let tmpHTML = tmpService.generateIndexHTML('test-project', tmpExamples, 9123);
 
 						Expect(tmpHTML).to.be.a('string');
 						Expect(tmpHTML).to.include('<!DOCTYPE html>');
@@ -590,11 +609,10 @@ suite
 
 				test
 				(
-					'ExamplesBuild.gatherExampleFolders should find folders with package.json in a temp fixture.',
+					'gatherExampleFolders should find folders with package.json in a temp fixture.',
 					function()
 					{
-						let tmpExamplesBuild = require('../source/commands/html_example_serving/Quackage-Command-ExamplesBuild.js');
-						let tmpGather = tmpExamplesBuild.prototype.gatherExampleFolders;
+						let tmpService = libQuackage.QuackageExampleService;
 
 						// Create a temporary fixture
 						let tmpFixtureBase = libPath.join(__dirname, 'tmp_fixture_examples');
@@ -609,7 +627,7 @@ suite
 						libFS.writeFileSync(libPath.join(tmpFixtureAppA, 'package.json'), '{"name":"app_a"}');
 						libFS.writeFileSync(libPath.join(tmpFixtureAppB, 'package.json'), '{"name":"app_b"}');
 
-						let tmpResult = tmpGather.call({}, tmpFixtureBase);
+						let tmpResult = tmpService.gatherExampleFolders(tmpFixtureBase);
 						Expect(tmpResult).to.be.an('array');
 						Expect(tmpResult).to.have.length(2);
 						Expect(tmpResult.map((pR) => pR.Name)).to.include('app_a');
@@ -627,12 +645,10 @@ suite
 
 				test
 				(
-					'ExamplesServe.gatherServableExamples should find examples with dist/index.html in a temp fixture.',
+					'gatherServableExamples should find examples with dist/index.html in a temp fixture.',
 					function()
 					{
-						let tmpExamplesServe = require('../source/commands/html_example_serving/Quackage-Command-ExamplesServe.js');
-						let tmpGather = tmpExamplesServe.prototype.gatherServableExamples;
-						let tmpFormat = tmpExamplesServe.prototype.formatDisplayName;
+						let tmpService = libQuackage.QuackageExampleService;
 
 						// Create a temporary fixture
 						let tmpFixtureBase = libPath.join(__dirname, 'tmp_fixture_serve');
@@ -647,7 +663,7 @@ suite
 						libFS.writeFileSync(libPath.join(tmpFixtureDist, 'index.html'), '<html></html>');
 						libFS.writeFileSync(libPath.join(tmpFixtureDebug, 'index.html'), '<html></html>');
 
-						let tmpResult = tmpGather.call({ formatDisplayName: tmpFormat }, tmpFixtureBase);
+						let tmpResult = tmpService.gatherServableExamples(tmpFixtureBase);
 						Expect(tmpResult).to.be.an('array');
 						Expect(tmpResult).to.have.length(2);
 

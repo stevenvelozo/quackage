@@ -62,6 +62,8 @@ _Pict.instantiateServiceProvider('FilePersistence');
 _Pict.instantiateServiceProvider('DataGeneration');
 // Add the Quackage Process Management service
 _Pict.addAndInstantiateServiceType('QuackageProcess', require('./services/Quackage-Execute-Process.js'));
+// Add the Quackage Example Service for building and serving HTML examples
+_Pict.addAndInstantiateServiceType('QuackageExampleService', require('./services/Quackage-ExampleService.js'));
 
 // Grab the current working directory for the quackage
 _Pict.AppData.CWD = _Pict.QuackageProcess.cwd();

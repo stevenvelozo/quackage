@@ -20,22 +20,11 @@ class QuackageCommandExamples extends libCommandLineCommand
 	onRunAsync(fCallback)
 	{
 		let tmpExamplesFolder = libPath.resolve(this.ArgumentString || './example_applications');
-		let tmpPort = this.CommandOptions.port || '';
+		let tmpPort = this.CommandOptions.port ? parseInt(this.CommandOptions.port, 10) : 0;
 
 		this.log.info(`Building and serving examples from [${tmpExamplesFolder}] ...`);
 
-		// First, run examples-build
-		let tmpBuildCommand = this.pict.servicesMap['QuackageCommandExamplesBuild'];
-		if (!tmpBuildCommand)
-		{
-			this.log.error(`Could not find the examples-build command.  Make sure it is registered.`);
-			return fCallback(new Error('examples-build command not found'));
-		}
-
-		// Set the argument string so examples-build uses the same folder
-		tmpBuildCommand.ArgumentString = tmpExamplesFolder;
-
-		tmpBuildCommand.onRunAsync(
+		this.fable.QuackageExampleService.buildExamples(tmpExamplesFolder,
 			(pBuildError) =>
 			{
 				if (pBuildError)
@@ -43,23 +32,8 @@ class QuackageCommandExamples extends libCommandLineCommand
 					this.log.warn(`Some examples had build errors, but continuing to serve what we have...`);
 				}
 
-				// Now run examples-serve
-				let tmpServeCommand = this.pict.servicesMap['QuackageCommandExamplesServe'];
-				if (!tmpServeCommand)
-				{
-					this.log.error(`Could not find the examples-serve command.  Make sure it is registered.`);
-					return fCallback(new Error('examples-serve command not found'));
-				}
-
-				tmpServeCommand.ArgumentString = tmpExamplesFolder;
-				tmpServeCommand.CommandOptions = tmpServeCommand.CommandOptions || {};
-				if (tmpPort)
-				{
-					tmpServeCommand.CommandOptions.port = tmpPort;
-				}
-
 				// examples-serve doesn't call back (long-lived server), so neither do we
-				tmpServeCommand.onRunAsync(fCallback);
+				this.fable.QuackageExampleService.serveExamples(tmpExamplesFolder, tmpPort, fCallback);
 			});
 	}
 }
