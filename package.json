@@ -1,6 +1,6 @@
 {
     "name": "quackage",
-    "version": "1.0.54",
+    "version": "1.0.55",
     "description": "Building.  Testing.  Quacking.  Reloading.",
     "main": "source/Quackage-CLIProgram.js",
     "scripts": {
