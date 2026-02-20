@@ -49,7 +49,12 @@ let _Pict = new libCLIProgram(
 		require('./commands/Quackage-Command-DocuserveInject.js'),
 		require('./commands/Quackage-Command-DocuservePrepareLocal.js'),
 		require('./commands/Quackage-Command-PrepareDocs.js'),
-		require('./commands/Quackage-Command-DocuserveServe.js')
+		require('./commands/Quackage-Command-DocuserveServe.js'),
+
+		// HTML example application building and serving
+		require('./commands/html_example_serving/Quackage-Command-ExamplesBuild.js'),
+		require('./commands/html_example_serving/Quackage-Command-ExamplesServe.js'),
+		require('./commands/html_example_serving/Quackage-Command-Examples.js')
 	]);
 
 // Instantiate the file persistence service
