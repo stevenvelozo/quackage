@@ -61,6 +61,8 @@
 
 		"build": "npx quack build",
 
+		"example": "npx quack example",
+
 		"docs": "npx quack prepare-docs ./docs -d ./modules",
 		"docs-serve": "npx quack docs-serve ./docs"
 	},
