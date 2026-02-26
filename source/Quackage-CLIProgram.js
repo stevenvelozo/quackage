@@ -20,6 +20,7 @@ let _Pict = new libCLIProgram(
 		require('./commands/Quackage-Command-UpdatePackage.js'),
 		require('./commands/Quackage-Command-UpdatePackage-Luxury.js'),
 		require('./commands/Quackage-Command-Lint.js'),
+		require('./commands/Quackage-Command-UpdateNodeGitignore.js'),
 
 		// Mocha test execution
 		require('./commands/Quackage-Command-RunMochaTests.js'),
