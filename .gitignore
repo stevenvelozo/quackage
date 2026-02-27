@@ -9,6 +9,7 @@ debug/testenv
 .browserslistrc-BACKUP
 .gulpfile-quackage.js
 .gulpfile-quackage-config.json
+*.quackage.bak
 
 # I just dislike this one.
 .DS_Store
