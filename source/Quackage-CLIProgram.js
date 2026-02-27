@@ -24,6 +24,7 @@ let _Pict = new libCLIProgram(
 
 		// Mocha test execution
 		require('./commands/Quackage-Command-RunMochaTests.js'),
+		require('./commands/Quackage-Command-RunNycCoverage.js'),
 
 		// Gulp build execution (for multiple build targets)
 		require('./commands/Quackage-Command-Build.js'),
