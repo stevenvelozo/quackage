@@ -59,7 +59,7 @@ class QuackageCommandBuild extends libCommandLineCommand
 		{
 			// The standard mocha command we've been using:
 			// npx mocha -u tdd -R spec
-			this.fable.QuackageProcess.execute(`${tmpMochaLocation}`, [`-u`, `tdd`, '-R', 'spec'], { cwd: this.fable.AppData.CWD }, fCallback);
+			this.fable.QuackageProcess.execute(`${tmpMochaLocation}`, [`-u`, `tdd`, '--exit', '-R', 'spec'], { cwd: this.fable.AppData.CWD }, fCallback);
 		}
 	};
 }
