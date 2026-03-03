@@ -1,6 +1,6 @@
 {
     "name": "quackage",
-    "version": "1.0.59",
+    "version": "1.0.60",
     "description": "Building.  Testing.  Quacking.  Reloading.",
     "main": "source/Quackage-CLIProgram.js",
     "scripts": {
@@ -67,6 +67,7 @@
         "nyc": "^15.1.0",
         "pict-docuserve": "^0.0.28",
         "pict-service-commandlineutility": "^1.0.19",
+        "retold-harness": "^1.1.2",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0"
     },

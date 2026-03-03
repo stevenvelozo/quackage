@@ -3,6 +3,10 @@ const libFS = require('fs');
 const libPath = require('path');
 const libHTTP = require('http');
 
+const libFable = require('fable');
+const libBookstoreSchema = require('retold-harness/source/schemas/Retold-Harness-Service-Schema-Bookstore.js');
+const libSQLiteProvider = require('retold-harness/source/providers/Retold-Harness-Service-Provider-SQLite.js');
+
 class QuackageExampleService extends libPict.ServiceProviderBase
 {
 	constructor(pFable, pManifest, pServiceHash)
@@ -380,28 +384,57 @@ ${tmpExampleListItems}		</ul>
 			});
 	}
 
-	// --- Serve examples ---
+	// --- Bookstore API initialization ---
 
-	serveExamples(pExamplesFolder, pPort, fCallback)
+	initializeBookstoreAPI(pPort, pDataFolder, fCallback)
 	{
-		let tmpExamplesFolder = libPath.resolve(pExamplesFolder || './example_applications');
-		let tmpProjectName = this.fable.AppData.Package.name || 'unknown-project';
-		let tmpPort = pPort || this.hashProjectNameToPort(tmpProjectName);
-
-		this.log.info(`Scanning for example applications in [${tmpExamplesFolder}] ...`);
-
-		let tmpExamples = this.gatherServableExamples(tmpExamplesFolder);
-
-		if (tmpExamples.length < 1)
+		let tmpSQLitePath = libPath.join(pDataFolder, '.data', 'bookstore.sqlite');
+		let tmpDataDir = libPath.dirname(tmpSQLitePath);
+		if (!libFS.existsSync(tmpDataDir))
 		{
-			this.log.warn(`No servable examples found in [${tmpExamplesFolder}].  Looking for subfolders with dist/index.html or index.html.`);
-			return fCallback();
+			libFS.mkdirSync(tmpDataDir, { recursive: true });
 		}
 
-		this.log.info(`Found ${tmpExamples.length} servable example(s).`);
+		let tmpSettings =
+			{
+				"Product": "QuackageExampleServer",
+				"ProductVersion": "1.0.0",
+				"APIServerPort": pPort,
+				"SQLite":
+				{
+					"SQLiteFilePath": tmpSQLitePath
+				}
+			};
 
-		let tmpIndexHTML = this.generateIndexHTML(tmpProjectName, tmpExamples, tmpPort);
+		let tmpHarnessFable = new libFable(tmpSettings);
 
+		// Register the bookstore schema provider
+		tmpHarnessFable.serviceManager.addServiceType('HarnessSchemaProvider', libBookstoreSchema);
+		tmpHarnessFable.serviceManager.instantiateServiceProvider('HarnessSchemaProvider');
+
+		// Register the SQLite provider configurator
+		tmpHarnessFable.serviceManager.addServiceType('MeadowProviderConfigurator', libSQLiteProvider);
+		tmpHarnessFable.serviceManager.instantiateServiceProvider('MeadowProviderConfigurator');
+
+		// Skip the default web UI route -- we will register our own routes after initialization
+		tmpHarnessFable.MeadowProviderConfigurator.serveWebUI = (fStepCallback) => { return fStepCallback(); };
+
+		// Initialize the harness (connects DB, creates tables, seeds data, registers API endpoints, starts Orator)
+		tmpHarnessFable.MeadowProviderConfigurator.initializeHarness(
+			(pError) =>
+			{
+				if (pError)
+				{
+					return fCallback(pError);
+				}
+				return fCallback(null, tmpHarnessFable);
+			});
+	}
+
+	// --- Serve static files via a raw HTTP server (fallback when retold-harness unavailable) ---
+
+	serveStaticHTTP(pExamplesFolder, pIndexHTML, pPort, fCallback)
+	{
 		let tmpServer = libHTTP.createServer(
 			(pRequest, pResponse) =>
 			{
@@ -410,13 +443,13 @@ ${tmpExampleListItems}		</ul>
 				if (tmpRequestURL === '/' || tmpRequestURL === '/index.html')
 				{
 					pResponse.writeHead(200, { 'Content-Type': 'text/html' });
-					pResponse.end(tmpIndexHTML);
+					pResponse.end(pIndexHTML);
 					return;
 				}
 
-				let tmpFilePath = libPath.join(tmpExamplesFolder, decodeURIComponent(tmpRequestURL));
+				let tmpFilePath = libPath.join(pExamplesFolder, decodeURIComponent(tmpRequestURL));
 
-				if (!tmpFilePath.startsWith(tmpExamplesFolder))
+				if (!tmpFilePath.startsWith(pExamplesFolder))
 				{
 					pResponse.writeHead(403);
 					pResponse.end('Forbidden');
@@ -451,19 +484,10 @@ ${tmpExampleListItems}		</ul>
 				}
 			});
 
-		tmpServer.listen(tmpPort,
+		tmpServer.listen(pPort,
 			() =>
 			{
-				this.log.info(`##############################################`);
-				this.log.info(`  Example server running at http://localhost:${tmpPort}/`);
-				this.log.info(`  Project: ${tmpProjectName}`);
-				this.log.info(`  Serving ${tmpExamples.length} example(s):`);
-				for (let i = 0; i < tmpExamples.length; i++)
-				{
-					this.log.info(`    - ${tmpExamples[i].DisplayName}: http://localhost:${tmpPort}/${tmpExamples[i].RelativePath}`);
-				}
-				this.log.info(`##############################################`);
-				this.log.info(`Press Ctrl+C to stop.`);
+				this.log.info(`  Static-only server running at http://localhost:${pPort}/`);
 			});
 
 		tmpServer.on('error',
@@ -471,7 +495,7 @@ ${tmpExampleListItems}		</ul>
 			{
 				if (pError.code === 'EADDRINUSE')
 				{
-					this.log.error(`Port ${tmpPort} is already in use.  Try specifying a different port with -p.`);
+					this.log.error(`Port ${pPort} is already in use.  Try specifying a different port with -p.`);
 				}
 				else
 				{
@@ -479,8 +503,113 @@ ${tmpExampleListItems}		</ul>
 				}
 				return fCallback(pError);
 			});
+	}
 
-		// Keep the process running (don't call fCallback -- server is long-lived)
+	// --- Serve examples ---
+
+	serveExamples(pExamplesFolder, pPort, fCallback)
+	{
+		let tmpExamplesFolder = libPath.resolve(pExamplesFolder || './example_applications');
+		let tmpProjectName = this.fable.AppData.Package.name || 'unknown-project';
+		let tmpPort = pPort || this.hashProjectNameToPort(tmpProjectName);
+
+		this.log.info(`Scanning for example applications in [${tmpExamplesFolder}] ...`);
+
+		let tmpExamples = this.gatherServableExamples(tmpExamplesFolder);
+
+		if (tmpExamples.length < 1)
+		{
+			this.log.warn(`No servable examples found in [${tmpExamplesFolder}].  Looking for subfolders with dist/index.html or index.html.`);
+			return fCallback();
+		}
+
+		this.log.info(`Found ${tmpExamples.length} servable example(s).`);
+
+		let tmpIndexHTML = this.generateIndexHTML(tmpProjectName, tmpExamples, tmpPort);
+
+		// Initialize the bookstore API (retold-harness + SQLite)
+		this.log.info(`Initializing bookstore API with SQLite ...`);
+		this.initializeBookstoreAPI(tmpPort, tmpExamplesFolder,
+			(pError, pHarnessFable) =>
+			{
+				if (pError)
+				{
+					this.log.warn(`Bookstore API initialization failed: ${pError}`);
+					this.log.warn(`Falling back to static-only file server.`);
+					this.serveStaticHTTP(tmpExamplesFolder, tmpIndexHTML, tmpPort, fCallback);
+					return;
+				}
+
+				// The Orator/Restify server is now running with all Meadow API endpoints.
+				// Add static file serving routes to it.
+				let tmpRestifyServer = pHarnessFable.OratorServiceServer.server;
+
+				// Serve the example index page at /
+				tmpRestifyServer.get('/',
+					(pRequest, pResponse, fNext) =>
+					{
+						pResponse.writeHead(200, { 'Content-Type': 'text/html' });
+						pResponse.end(tmpIndexHTML);
+						return fNext();
+					});
+
+				// Serve static example files as a catch-all (registered last so Meadow API routes take priority)
+				tmpRestifyServer.get('/*',
+					(pRequest, pResponse, fNext) =>
+					{
+						let tmpRequestURL = pRequest.url.split('?')[0];
+						let tmpFilePath = libPath.join(tmpExamplesFolder, decodeURIComponent(tmpRequestURL));
+
+						if (!tmpFilePath.startsWith(tmpExamplesFolder))
+						{
+							pResponse.writeHead(403);
+							pResponse.end('Forbidden');
+							return fNext(false);
+						}
+
+						if (libFS.existsSync(tmpFilePath) && libFS.statSync(tmpFilePath).isDirectory())
+						{
+							tmpFilePath = libPath.join(tmpFilePath, 'index.html');
+						}
+
+						if (!libFS.existsSync(tmpFilePath))
+						{
+							pResponse.writeHead(404);
+							pResponse.end('Not Found');
+							return fNext(false);
+						}
+
+						let tmpExtension = libPath.extname(tmpFilePath).toLowerCase();
+						let tmpMimeType = this.getMimeType(tmpExtension);
+
+						try
+						{
+							let tmpContent = libFS.readFileSync(tmpFilePath);
+							pResponse.writeHead(200, { 'Content-Type': tmpMimeType });
+							pResponse.end(tmpContent);
+						}
+						catch (pReadError)
+						{
+							pResponse.writeHead(500);
+							pResponse.end('Internal Server Error');
+						}
+						return fNext(false);
+					});
+
+				this.log.info(`##############################################`);
+				this.log.info(`  Example server running at http://localhost:${tmpPort}/`);
+				this.log.info(`  Project: ${tmpProjectName}`);
+				this.log.info(`  Bookstore API: http://localhost:${tmpPort}/1.0/`);
+				this.log.info(`  Serving ${tmpExamples.length} example(s):`);
+				for (let i = 0; i < tmpExamples.length; i++)
+				{
+					this.log.info(`    - ${tmpExamples[i].DisplayName}: http://localhost:${tmpPort}/${tmpExamples[i].RelativePath}`);
+				}
+				this.log.info(`##############################################`);
+				this.log.info(`Press Ctrl+C to stop.`);
+
+				// Keep the process running (don't call fCallback -- server is long-lived)
+			});
 	}
 }
 
