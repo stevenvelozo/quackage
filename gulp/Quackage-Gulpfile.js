@@ -90,6 +90,15 @@ libGulp.task('minified',
 				debug: true
 			});
 
+		// Ignore modules that should not be bundled (e.g. WASM loaders loaded via <script> tag)
+		if (Array.isArray(_CONFIG.BrowserifyIgnore))
+		{
+			for (var i = 0; i < _CONFIG.BrowserifyIgnore.length; i++)
+			{
+				tmpBrowserify.ignore(_CONFIG.BrowserifyIgnore[i]);
+			}
+		}
+
 		return tmpBrowserify.bundle()
 			.pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
 			.pipe(libVinylBuffer())
@@ -112,6 +121,15 @@ libGulp.task('debug',
 				standalone: _CONFIG.LibraryObjectName,
 				debug: true
 			});
+
+		// Ignore modules that should not be bundled (e.g. WASM loaders loaded via <script> tag)
+		if (Array.isArray(_CONFIG.BrowserifyIgnore))
+		{
+			for (var i = 0; i < _CONFIG.BrowserifyIgnore.length; i++)
+			{
+				tmpBrowserify.ignore(_CONFIG.BrowserifyIgnore[i]);
+			}
+		}
 
 		return tmpBrowserify.bundle()
 			.pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))

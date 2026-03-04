@@ -6,7 +6,8 @@
 		"LibraryObjectName": "{~PascalCaseIdentifier:AppData.Package.name~}",
 		"LibraryOutputFolder": "{~Data:AppData.CWD~}/dist/",
 		"LibraryUniminifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}js",
-		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js"
+		"LibraryMinifiedFileName": "{~Data:AppData.Package.name~}.{~Data:Record.BuildFileLabel~}min.js",
+		"BrowserifyIgnore": []
 	},
 	"WatchSettings": {
 		"MonitorFolders": ["./html", "./css", "./assets"],
