@@ -69,7 +69,15 @@ class QuackageCommandBuild extends libCommandLineCommand
 				}
 
 				// ## .gulpfile-quackage-config.json
-				libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage-config.json`, this.fable.parseTemplateByHash('Gulpfile-Configuration', pAction));
+				let tmpGulpfileConfigContent = this.fable.parseTemplateByHash('Gulpfile-Configuration', pAction);
+				// Allow per-action BrowserifyIgnore overrides from GulpExecutions entries
+				if (Array.isArray(pAction.BrowserifyIgnore) && pAction.BrowserifyIgnore.length > 0)
+				{
+					let tmpGulpfileConfig = JSON.parse(tmpGulpfileConfigContent);
+					tmpGulpfileConfig.BrowserifyIgnore = pAction.BrowserifyIgnore;
+					tmpGulpfileConfigContent = JSON.stringify(tmpGulpfileConfig, null, 4);
+				}
+				libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage-config.json`, tmpGulpfileConfigContent);
 				// ## .gulpfile-quackage.js
 				libFS.writeFileSync(`${this.fable.AppData.CWD}/.gulpfile-quackage.js`, this.fable.parseTemplateByHash('Gulpfile-QuackageBase', { AppData: this.fable.AppData, Record: pAction }));
 				// ## gulpfile.js

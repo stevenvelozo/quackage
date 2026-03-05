@@ -70,7 +70,13 @@ console.log(`   > Building to [${_CONFIG.LibraryUniminifiedFileName}] and [${_CO
 console.log(`--> Gulp is taking over!`);
 
 const libBrowserify = require('browserify');
-const libGulp = require('gulp');
+
+// Resolve gulp from the consuming project's CWD so that the task
+// registry is shared with the gulp CLI (which also resolves from CWD).
+// Without this, `file:` dev-dependency references to quackage cause
+// two separate gulp instances — tasks registered here become invisible
+// to the CLI, resulting in "Task never defined: default".
+const libGulp = require(require.resolve('gulp', { paths: [process.cwd()] }));
 
 const libVinylSourceStream = require('vinyl-source-stream');
 const libVinylBuffer = require('vinyl-buffer');
@@ -78,28 +84,74 @@ const libVinylBuffer = require('vinyl-buffer');
 const libSourcemaps = require('gulp-sourcemaps');
 const libBabel = require('gulp-babel');
 const libTerser = require('gulp-terser');
+const { Transform } = require('stream');
+
+/**
+ * Create a configured browserify instance with common settings.
+ *
+ * Applies:
+ *   - BrowserifyIgnore entries from config
+ *   - Global transform to rewrite `require('node:xxx')` → `require('xxx')`
+ *     (needed for packages like find-my-way v9 that use Node.js prefixed builtins)
+ *
+ * @param {object} pConfig - The gulpfile config object
+ * @returns {object} Configured browserify instance
+ */
+function createBrowserifyInstance(pConfig)
+{
+	var tmpBrowserify = libBrowserify(
+		{
+			entries: pConfig.EntrypointInputSourceFile,
+			standalone: pConfig.LibraryObjectName,
+			debug: true
+		});
+
+	// Ignore modules that should not be bundled (e.g. WASM loaders loaded via <script> tag)
+	if (Array.isArray(pConfig.BrowserifyIgnore))
+	{
+		for (var i = 0; i < pConfig.BrowserifyIgnore.length; i++)
+		{
+			tmpBrowserify.ignore(pConfig.BrowserifyIgnore[i]);
+		}
+	}
+
+	// Global transform: rewrite require('node:xxx') → require('xxx')
+	// Some npm packages (e.g. find-my-way v9) use the `node:` prefix for
+	// built-in modules, which browserify cannot resolve. This transform
+	// strips the prefix so browserify resolves the standard module name.
+	tmpBrowserify.transform(
+		function(pFile)
+		{
+			var tmpChunks = [];
+			return new Transform(
+				{
+					transform: function(pChunk, pEncoding, fCallback)
+					{
+						tmpChunks.push(pChunk);
+						fCallback();
+					},
+					flush: function(fCallback)
+					{
+						var tmpSource = Buffer.concat(tmpChunks).toString('utf8');
+						tmpSource = tmpSource.replace(
+							/require\(\s*['"]node:([^'"]+)['"]\s*\)/g,
+							"require('$1')"
+						);
+						this.push(tmpSource);
+						fCallback();
+					}
+				});
+		},
+		{ global: true }
+	);
+
+	return tmpBrowserify;
+}
 
 // Build the module for the browser
 libGulp.task('minified',
 	() => {
-		// set up the custom browserify instance for this task
-		var tmpBrowserify = libBrowserify(
-			{
-				entries: _CONFIG.EntrypointInputSourceFile,
-				standalone: _CONFIG.LibraryObjectName,
-				debug: true
-			});
-
-		// Ignore modules that should not be bundled (e.g. WASM loaders loaded via <script> tag)
-		if (Array.isArray(_CONFIG.BrowserifyIgnore))
-		{
-			for (var i = 0; i < _CONFIG.BrowserifyIgnore.length; i++)
-			{
-				tmpBrowserify.ignore(_CONFIG.BrowserifyIgnore[i]);
-			}
-		}
-
-		return tmpBrowserify.bundle()
+		return createBrowserifyInstance(_CONFIG).bundle()
 			.pipe(libVinylSourceStream(_CONFIG.LibraryMinifiedFileName))
 			.pipe(libVinylBuffer())
 			.pipe(libSourcemaps.init({loadMaps: true}))
@@ -114,24 +166,7 @@ libGulp.task('minified',
 // Build the module for the browser
 libGulp.task('debug',
 	() => {
-		// set up the custom browserify instance for this task
-		var tmpBrowserify = libBrowserify(
-			{
-				entries: _CONFIG.EntrypointInputSourceFile,
-				standalone: _CONFIG.LibraryObjectName,
-				debug: true
-			});
-
-		// Ignore modules that should not be bundled (e.g. WASM loaders loaded via <script> tag)
-		if (Array.isArray(_CONFIG.BrowserifyIgnore))
-		{
-			for (var i = 0; i < _CONFIG.BrowserifyIgnore.length; i++)
-			{
-				tmpBrowserify.ignore(_CONFIG.BrowserifyIgnore[i]);
-			}
-		}
-
-		return tmpBrowserify.bundle()
+		return createBrowserifyInstance(_CONFIG).bundle()
 			.pipe(libVinylSourceStream(_CONFIG.LibraryUniminifiedFileName))
 			.pipe(libVinylBuffer())
 			.pipe(libSourcemaps.init({loadMaps: true}))
