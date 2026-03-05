@@ -43,7 +43,7 @@ class QuackageCommandCopyFilesFromTo extends libCommandLineCommand
 		{
 			let tmpErrorMessage = `Not even the git checkout location has an installation of copy-files-from-to at [${tmpCFFTLocation}]... building cannot commence.  We also tried CWD [${tmpCWDCFFTLocation}] and relative node_modules [${tmpRelativePackageCFFTLocation}].  Sorry!  Maybe you need to run "npm install" somewhere??`;
 			this.log.info(tmpErrorMessage)
-			return fActionCallback(new Error(tmpErrorMessage));
+			return fCallback(new Error(tmpErrorMessage));
 		}
 		this.log.info(`Quackage found copy-files-from-to at [${tmpCFFTLocation}] ... executing build from there.`);
 

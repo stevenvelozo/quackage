@@ -44,7 +44,7 @@ class QuackageCommandBuild extends libCommandLineCommand
 		{
 			let tmpErrorMessage = `Not even the git checkout location has an installation of mocha at [${tmpMochaLocation}]... building cannot commence.  We also tried CWD [${tmpCWDMochaLocation}] and relative node_modules [${tmpRelativePackageMochaLocation}].  Sorry!  Maybe you need to run "npm install" somewhere??`;
 			this.log.info(tmpErrorMessage)
-			return fActionCallback(new Error(tmpErrorMessage));
+			return fCallback(new Error(tmpErrorMessage));
 		}
 		this.log.info(`Quackage found mocha at [${tmpMochaLocation}] ... executing build from there.`);
 
