@@ -336,39 +336,67 @@ ${tmpExampleListItems}		</ul>
 				}
 
 				let tmpNpxLocation = this.resolveExecutable('npx');
+				let tmpNpmLocation = this.resolveExecutable('npm');
 
-				this.fable.QuackageProcess.execute(
-					tmpNpxLocation,
-					['quack', 'build'],
-					{ cwd: pExample.Path },
-					(pBuildError) =>
-					{
-						if (pBuildError)
+				// Install dependencies if node_modules does not exist
+				let tmpNodeModulesPath = libPath.join(pExample.Path, 'node_modules');
+				let tmpRunBuild = () =>
+				{
+					this.fable.QuackageProcess.execute(
+						tmpNpxLocation,
+						['quack', 'build'],
+						{ cwd: pExample.Path },
+						(pBuildError) =>
 						{
-							this.log.error(`Build error in [${pExample.Name}]: ${pBuildError.message}`);
-						}
+							if (pBuildError)
+							{
+								this.log.error(`Build error in [${pExample.Name}]: ${pBuildError.message}`);
+							}
 
-						if (tmpPackage.copyFiles || tmpPackage.copyFilesSettings)
-						{
-							this.log.info(`Copying files for [${pExample.Name}] ...`);
-							this.fable.QuackageProcess.execute(
-								tmpNpxLocation,
-								['quack', 'copy'],
-								{ cwd: pExample.Path },
-								(pCopyError) =>
-								{
-									if (pCopyError)
+							if (tmpPackage.copyFiles || tmpPackage.copyFilesSettings)
+							{
+								this.log.info(`Copying files for [${pExample.Name}] ...`);
+								this.fable.QuackageProcess.execute(
+									tmpNpxLocation,
+									['quack', 'copy'],
+									{ cwd: pExample.Path },
+									(pCopyError) =>
 									{
-										this.log.error(`Copy error in [${pExample.Name}]: ${pCopyError.message}`);
-									}
-									return fExampleCallback();
-								});
-						}
-						else
+										if (pCopyError)
+										{
+											this.log.error(`Copy error in [${pExample.Name}]: ${pCopyError.message}`);
+										}
+										return fExampleCallback();
+									});
+							}
+							else
+							{
+								return fExampleCallback();
+							}
+						});
+				};
+
+				if (!libFS.existsSync(tmpNodeModulesPath))
+				{
+					this.log.info(`Installing dependencies for [${pExample.Name}] ...`);
+					this.fable.QuackageProcess.execute(
+						tmpNpmLocation,
+						['install'],
+						{ cwd: pExample.Path },
+						(pInstallError) =>
 						{
-							return fExampleCallback();
-						}
-					});
+							if (pInstallError)
+							{
+								this.log.error(`Install error in [${pExample.Name}]: ${pInstallError.message}`);
+								return fExampleCallback();
+							}
+							tmpRunBuild();
+						});
+				}
+				else
+				{
+					tmpRunBuild();
+				}
 			},
 			(pError) =>
 			{
