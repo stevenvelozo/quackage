@@ -19,7 +19,7 @@ class QuackageCommandBuild extends libCommandLineCommand
 	onRunAsync(fCallback)
 	{
 		// See if the user passed in a filter for tests
-		let tmpTestGrepExpression = (typeof(this.CommandOptions.search_expression) === 'undefined') ? false : this.CommandOptions.search_expression;
+		let tmpTestGrepExpression = (typeof(this.CommandOptions.grep) === 'undefined') ? false : this.CommandOptions.grep;
 
 		let tmpCWDMochaLocation = `${this.fable.AppData.CWD}/node_modules/.bin/mocha`;
 		let tmpRelativePackageMochaLocation = `${__dirname}/../../../.bin/mocha`;

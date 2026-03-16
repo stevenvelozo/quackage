@@ -210,6 +210,38 @@ suite
 						Expect(tmpClass.prototype.onRunAsync).to.be.a('function');
 					}
 				);
+
+				test
+				(
+					'RunMochaTests command should have a --grep option registered.',
+					function()
+					{
+						let tmpCommand = getCommand('run-mocha-tests');
+						Expect(tmpCommand).to.be.an('object');
+
+						// Verify the --grep option is registered on the commander command
+						let tmpGrepOption = tmpCommand.options.find((pOpt) => pOpt.long === '--grep');
+						Expect(tmpGrepOption).to.be.an('object', 'Expected --grep option to be registered on run-mocha-tests command');
+						Expect(tmpGrepOption.short).to.equal('-g');
+						Expect(tmpGrepOption.optional).to.equal(true, 'grep should accept an optional value');
+					}
+				);
+
+				test
+				(
+					'RunMochaTests --grep option property name should match what onRunAsync reads.',
+					function()
+					{
+						let tmpCommand = getCommand('run-mocha-tests');
+						let tmpGrepOption = tmpCommand.options.find((pOpt) => pOpt.long === '--grep');
+
+						// Commander derives the property name from the long flag (--grep => "grep").
+						// onRunAsync reads this.CommandOptions.grep to get the expression.
+						// This test ensures the two stay in sync — the bug was that onRunAsync
+						// previously read "search_expression" (the placeholder name) instead of "grep".
+						Expect(tmpGrepOption.attributeName()).to.equal('grep');
+					}
+				);
 			}
 		);
 
